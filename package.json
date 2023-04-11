@@ -1,0 +1,21 @@
+{
+  "name": "rc-video-demo",
+  "version": "0.1.0",
+  "dependencies": {
+    "@ringcentral/juno": "2.19.2",
+    "@ringcentral/juno-icon": "1.13.0",
+    "moment": "^2.29.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "6.3.0",
+    "styled-components": "^5.3.5",
+    "use-global-storage": "^0.1.0"
+  },
+  "scripts": {
+    "build": "node ./build.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.17.14",
+    "esbuild-copy-static-files": "^0.1.0"
+  }
+}
