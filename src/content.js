@@ -12,6 +12,7 @@ import { RcvEngine } from './lib/rcv';
 import SDK from './ringcentral';
 import './index.css';
 import App from './root';
+// import App from './oldRoot';
 
 import apiConfig from './config.json';
 
@@ -25,13 +26,7 @@ const rcvEngine = RcvEngine.create(
 );
 window.rcvEngine = rcvEngine;
 const rootElement = window.document.createElement('root');
-const leftPanelDOM = window.document.querySelector('.left_panel--content---9G9r');
-if (!!leftPanelDOM) {
-  leftPanelDOM.appendChild(rootElement);
-}
-else {
-  window.document.body.appendChild(rootElement);
-}
+window.document.body.appendChild(rootElement);
 const root = ReactDOM.createRoot(rootElement);
 
 function Root() {
@@ -50,18 +45,5 @@ function Root() {
 root.render(
   <Root />
 );
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('content' + message + sender);
-});
-
-window.addEventListener("message", async (event) => {
-  if (event.data && event.data.callbackUri) {
-    console.log(event.data.callbackUri);
-    const loginOptions = rcSDK.parseLoginRedirect(event.data.callbackUri);
-    loginOptions['code_verifier'] = localStorage.getItem('codeVerifier');
-    await rcSDK.login(loginOptions);
-  }
-}, false);
 
 console.log('content script loaded.');

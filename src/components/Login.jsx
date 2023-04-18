@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  RcTextField,
   RcButton,
 } from '@ringcentral/juno';
 
@@ -13,9 +12,9 @@ export function Login({
     <div>
       {
         loggedIn ? (
-          <RcButton onClick={onLogout}>Logout</RcButton>
+          <RcButton size='small' onClick={onLogout}>Logout</RcButton>
         ) : (
-          <RcButton onClick={onLogin}>Login</RcButton>
+          <RcButton size='small' onClick={onLogin}>Login</RcButton>
         )
       }
     </div>

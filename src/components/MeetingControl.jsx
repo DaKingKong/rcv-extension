@@ -13,6 +13,12 @@ import {
   ScreenshareBorder,
 } from '@ringcentral/juno-icon';
 
+const frameStyle = {
+  bottom: '30%',
+  left: '0',
+  position: 'absolute'
+}
+
 export function MeetingControl({
   room,
   onLeave,
@@ -27,7 +33,7 @@ export function MeetingControl({
   screenShareEnabled,
 }) {
   return (
-    <RcAppBar position="fixed">
+    <RcAppBar position="fixed" style={frameStyle}>
       <RcIconButton
         symbol={muted ? MicOff : Mic}
         onClick={async () => {

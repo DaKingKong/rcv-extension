@@ -1,21 +1,27 @@
 {
-    // Comments are accepted in the manifest, even though it is JSON.
     "manifest_version": 3,
-    "name": "Chrome Extension v3 Starter",
-    "description": "A minimal example of a chrome extension using manifest v3",
+    "name": "RCV Demo",
+    "description": "",
     "version": "0.0.1",
     "icons": {
-        "16": "logo/logo-16.png",
-        "48": "logo/logo-48.png",
-        "128": "logo/logo-128.png"
+      "16": "/images/logo16.png",
+      "32": "/images/logo32.png",
+      "48": "/images/logo48.png",
+      "128": "/images/logo128.png"
     },
-    "options_page": "settings/settings.html",
     "permissions": [
         "scripting",
         "activeTab"
     ],
+    "action": {
+      "default_icon": {
+        "16": "/images/logo16.png",
+        "32": "/images/logo32.png",
+        "48": "/images/logo48.png",
+        "128": "/images/logo128.png"
+      }
+    },
     "host_permissions": [
-        "https://www.google.com/*",
         "https://www.figma.com/*"
     ],
     "background": {
@@ -28,7 +34,6 @@
                 "ringcentral.js"
             ],
             "matches": [
-                "https://www.google.com/*",
                 "https://www.figma.com/*"
             ],
             "all_frames": false
