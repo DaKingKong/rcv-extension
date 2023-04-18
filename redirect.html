@@ -15,8 +15,9 @@
     <p>Loading</p>
     <script>
       window.opener.postMessage({
-        RCAuthorizationResponse: window.location.search
+        callbackUri: window.location.search
       }, "https://www.figma.com");
+      window.close();
     </script>
   </body>
   
