@@ -1,20 +1,23 @@
 import React from 'react';
 import {
-  RcTypography,
   RcList,
 } from '@ringcentral/juno';
 
 import { Participant } from './Participant';
 
+const style = {
+  position: 'absolute',
+  zIndex: '999999',
+  top: '0'
+}
+
 export function ParticipantList({
   participants,
   videoTrackMap,
-  audioTrackMap,
-  sharingTrackMap,
+  audioTrackMap
 }) {
   return (
-    <div>
-      <RcTypography variant="body2">Participants:</RcTypography>
+    <div style={style}>
       <RcList>
         {participants.map(participant => (
           <Participant
@@ -22,7 +25,6 @@ export function ParticipantList({
             participant={participant}
             videoTrack={videoTrackMap[participant.uid]}
             audioTrack={audioTrackMap[participant.uid]}
-            sharingTrack={sharingTrackMap[participant.uid]}
           />
         ))}
       </RcList>

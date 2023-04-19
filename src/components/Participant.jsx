@@ -1,28 +1,19 @@
-import React, { useState } from 'react';
-import {
-  RcTypography,
-  RcListItem,
-} from '@ringcentral/juno';
-
+import React from 'react';
+import Draggable from 'react-draggable';
 import { AudioTrack } from './AudioTrack';
 import { VideoTrack } from './VideoTrack';
 
-
-export function Participant({ participant, videoTrack, audioTrack, sharingTrack }) {
+export function Participant({ participant, videoTrack, audioTrack }) {
   return (
-    <RcListItem divider>
+    <Draggable>
       <div>
-        <RcTypography>{participant.displayName}</RcTypography>
         {
           videoTrack && (<VideoTrack track={videoTrack.stream} />)
-        }
-        {
-          sharingTrack && (<VideoTrack track={sharingTrack.stream} />)
         }
         {
           audioTrack && (<AudioTrack track={audioTrack.stream} />)
         }
       </div>
-    </RcListItem>
+    </Draggable>
   );
 }

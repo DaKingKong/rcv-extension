@@ -3,6 +3,14 @@ import React, { useRef, useEffect } from 'react';
 export function VideoTrack({ track }) {
   const ref = useRef(null);
 
+  const vidStyle = {
+    width: '200px',
+    height: '200px',
+    borderRadius: '50%',
+    objectFit: 'cover',
+    border: 'solid 8px white'
+  }
+
   useEffect(() => {
     if (!track) {
       return;
@@ -19,5 +27,5 @@ export function VideoTrack({ track }) {
     };
   }, [track]);
 
-  return <video ref={ref} />;
+  return <video style={vidStyle} ref={ref} />;
 }
