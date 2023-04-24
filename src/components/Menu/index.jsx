@@ -13,7 +13,6 @@ const itemStyle = {
 
 export function Menu({
     rcSDK,
-    rcvEngine,
     room,
     localParticipant,
     meetingController
@@ -60,7 +59,7 @@ export function Menu({
                 onClick={() => { setCollapsed(!collapsed); }}
                 style={itemStyle}
             />
-            {!!!room && !collapsed &&
+            {!!!room && !collapsed && loggedIn &&
                 <StartMeetingButton
                     setLoading={setLoading}
                     buttonStyle={itemStyle}
@@ -68,7 +67,9 @@ export function Menu({
             }
             {!!!room && !collapsed &&
                 <LogInButton
+                    rcSDK={rcSDK}
                     loggedIn={loggedIn}
+                    setLoggedIn={setLoggedIn}
                     buttonStyle={itemStyle}
                 />
             }

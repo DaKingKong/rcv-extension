@@ -10,7 +10,7 @@ import { HashRouter } from "react-router-dom";
 import useGlobalStorage from 'use-global-storage';
 import { RcvEngine } from './lib/rcv';
 import SDK from './ringcentral';
-import App from './root';
+import App from './Root';
 import apiConfig from './config.json';
 
 const rcSDK = new SDK(apiConfig);

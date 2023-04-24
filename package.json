@@ -4,6 +4,8 @@
   "dependencies": {
     "@ringcentral/juno": "2.19.2",
     "@ringcentral/juno-icon": "^1.35.0",
+    "axios": "^1.3.6",
+    "express": "^4.18.2",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

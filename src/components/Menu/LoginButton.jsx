@@ -3,7 +3,9 @@ import { RcIconButton } from '@ringcentral/juno';
 import { Login, Logout } from '@ringcentral/juno-icon';
 
 export function LogInButton({
+    rcSDK,
     loggedIn,
+    setLoggedIn,
     buttonStyle
 }) {
     return (
