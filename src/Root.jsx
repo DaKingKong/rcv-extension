@@ -7,23 +7,10 @@ import {
     StreamEvent,
     AudioEvent,
     VideoEvent
-} from './lib/rcv';
+} from '@ringcentral/video-sdk';
 
 import { Room } from './components/Room';
 import { Menu } from './components/Menu';
-
-const menuContainerStyle = {
-    background: '#038FC4',
-    borderRadius: '4px',
-    boxShadow: '0px 0px 5px 1px rgb(0 0 0 / 18%)',
-    position: 'fixed',
-    bottom: '100px',
-    right: '0',
-    zIndex: '99999',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center'
-}
 
 function App({
     rcSDK,
@@ -38,6 +25,12 @@ function App({
     const [audioTrackMap, setAudioTrackMap] = useState({});
     const audioTrackMapRef = useRef(audioTrackMap);
 
+    function refreshParticipants() {
+        const newMeetingController = rcvEngine.getMeetingController();
+        const userController = newMeetingController.getUserController();
+        const newParticipants = userController.getMeetingUsers();
+        setParticipants(Object.values(newParticipants).filter(p => !p.isDeleted));
+    }
     useEffect(() => {
         videoTrackMapRef.current = videoTrackMap;
         audioTrackMapRef.current = audioTrackMap;
@@ -45,10 +38,7 @@ function App({
 
     useEffect(() => {
         const onParticipantsUpdated = () => {
-            const newMeetingController = rcvEngine.getMeetingController();
-            const userController = newMeetingController.getUserController();
-            const newParticipants = userController.getMeetingUsers();
-            setParticipants(Object.values(newParticipants));
+            refreshParticipants();
         };
         const onMeetingJoined = async (meetingId, errorCode) => {
             if (errorCode === ErrorCodeType.ERR_OK) {
@@ -100,12 +90,20 @@ function App({
                 streamManager.on(StreamEvent.REMOTE_AUDIO_TRACK_REMOVED, onAudioTrackRemoved);
 
                 const audioController = newMeetingController.getAudioController();
-                audioController.enableAudio(true);
                 const videoController = newMeetingController.getVideoController();
                 audioController.on(AudioEvent.LOCAL_AUDIO_MUTE_CHANGED, (muted) => {
                     setLocalParticipant({
                         ...userController.getMyself(),
                         isAudioMuted: muted,
+                    });
+                });
+                audioController.on(AudioEvent.REMOTE_AUDIO_MUTE_CHANGED, (uid, muted) => {
+                    refreshParticipants();
+                });
+                audioController.on(AudioEvent.AUDIO_UNMUTE_DEMAND, () => {
+                    setLocalParticipant({
+                        ...userController.getMyself(),
+                        isAudioMuted: false,
                     });
                 });
                 videoController.on(VideoEvent.LOCAL_VIDEO_MUTE_CHANGED, (muted) => {
@@ -114,7 +112,12 @@ function App({
                         isVideoMuted: muted,
                     });
                 });
+                videoController.on(VideoEvent.REMOTE_VIDEO_MUTE_CHANGED, (uid, muted) => {
+                    refreshParticipants();
+                });
+                await audioController.enableAudio(true);
                 console.log(meetingInfo);
+                console.log(meetingInfo.meetingId);
             }
         };
         const onMeetingLeft = () => {
@@ -133,17 +136,16 @@ function App({
     return (
         <div >
             <Draggable axis='y' handle=".handle">
-                <div style={menuContainerStyle}>
-                    <Menu
-                        rcSDK={rcSDK}
-                        room={room}
-                        localParticipant={localParticipant}
-                        meetingController={meetingController}
-                    />
-                </div>
+                <Menu
+                    rcSDK={rcSDK}
+                    room={room}
+                    localParticipant={localParticipant}
+                    meetingController={meetingController}
+                />
             </Draggable>
             {!!room &&
                 <Room
+                    meetingController={meetingController}
                     participants={participants}
                     videoTrackMap={videoTrackMap}
                     audioTrackMap={audioTrackMap}

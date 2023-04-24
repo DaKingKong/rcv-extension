@@ -6,6 +6,7 @@ import {
 import { Participant } from './Participant';
 
 export function ParticipantList({
+  meetingController,
   participants,
   videoTrackMap,
   audioTrackMap
@@ -18,6 +19,7 @@ export function ParticipantList({
           participant={participant}
           videoTrack={videoTrackMap[participant.uid]}
           audioTrack={audioTrackMap[participant.uid]}
+          meetingController={meetingController}
         />
       ))}
     </RcList>

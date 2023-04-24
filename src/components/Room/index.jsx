@@ -8,6 +8,7 @@ const style = {
 }
 
 export function Room({
+    meetingController,
     participants,
     videoTrackMap,
     audioTrackMap
@@ -15,6 +16,7 @@ export function Room({
     return (
         <div style={style}>
             <ParticipantList
+                meetingController={meetingController}
                 participants={participants}
                 videoTrackMap={videoTrackMap}
                 audioTrackMap={audioTrackMap}

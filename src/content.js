@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom/client';
 import { RcThemeProvider } from '@ringcentral/juno';
 import { HashRouter } from "react-router-dom";
 import useGlobalStorage from 'use-global-storage';
-import { RcvEngine } from './lib/rcv';
+import { RcvEngine } from '@ringcentral/video-sdk';
 import SDK from './ringcentral';
 import App from './Root';
 import apiConfig from './config.json';
