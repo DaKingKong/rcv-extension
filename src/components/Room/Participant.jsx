@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Draggable from 'react-draggable';
 import { AudioTrack } from './AudioTrack';
 import { VideoTrack } from './VideoTrack';
 import { RemoteAudioMuteButton } from './RemoteAudioMuteButton';
 import { RemoteVideoMuteButton } from './RemoteVideoMuteButton';
+import { RcIconButton } from '@ringcentral/juno';
+import { Expand, DragableArea } from '@ringcentral/juno-icon';
 
 export function Participant({
   participant,
@@ -14,21 +16,9 @@ export function Participant({
   const itemStyle = {
     margin: '3px'
   }
-  const initialsStyle = {
-    pointerEvents: 'none',
-    fontFamily: 'sans-serif',
-    width: '200px',
-    borderRadius: '50%',
-    height: '200px',
-    border: "solid 8px white",
-    boxShadow: '0px 0px 5px 1px rgb(0 0 0 / 18%)',
-    background: "#038FC4",
-    fontSize: '60px',
-    fontWeight: 'bold',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    color: "#000000",
+  const rotatedItemStyle = {
+    transform: 'rotate(90deg)',
+    margin: '3px'
   }
   const menuContainerStyle = {
     background: '#038FC4',
@@ -37,9 +27,19 @@ export function Participant({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    margin: '2px auto',
+    marginTop: '4px',
     width: 'fit-content'
   }
+  const draggableStyle = {
+    width: 'auto',
+    height: 'auto',
+    placeContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    position: 'absolute',
+  }
+  const [size, setSize] = useState(200);
 
   function getInitials() {
     const nameSegments = participant.displayName.split(' ');
@@ -53,35 +53,84 @@ export function Participant({
   function isHostOrModerator() {
     const userController = meetingController.getUserController();
     const me = userController.getMyself();
-    console.log('is host: ' + me.isHost)
-    console.log('is moderator: ' + me.isModerator)
     return me.isHost || me.isModerator;
   }
+  const resizeHandler = (mouseDownEvent) => {
+    const startSize = size;
+    const startPosition = { x: mouseDownEvent.pageX, y: mouseDownEvent.pageY };
+    function onMouseMove(mouseMoveEvent) {
+      const longEdge =
+        (startSize - startPosition.x + mouseMoveEvent.pageX) > (startSize - startPosition.y + mouseMoveEvent.pageY)
+          ?
+          (startSize - startPosition.x + mouseMoveEvent.pageX) :
+          (startSize - startPosition.y + mouseMoveEvent.pageY);
+      setSize(longEdge);
+    }
+    function onMouseUp() {
+      document.body.removeEventListener("mousemove", onMouseMove);
+    }
+
+    document.body.addEventListener("mousemove", onMouseMove);
+    document.body.addEventListener("mouseup", onMouseUp, { once: true });
+  };
 
   return (
-    <Draggable>
-      <div>
+    <Draggable handle={`.rc-huddle-drag-participant-${participant.uid}`}>
+      <div style={draggableStyle}>
         {
           videoTrack && videoTrack.stream && videoTrack.stream.active ?
-            (<VideoTrack track={videoTrack.stream} />)
+            (<VideoTrack track={videoTrack.stream} size={size} />)
             :
-            (<div style={initialsStyle}><div>{getInitials()}</div></div>)
+            (<div style={{
+              pointerEvents: 'none',
+              fontFamily: 'sans-serif',
+              width: size,
+              borderRadius: '50%',
+              height: size,
+              border: "solid 8px white",
+              boxShadow: '0px 0px 5px 1px rgb(0 0 0 / 18%)',
+              background: "#038FC4",
+              fontSize: '60px',
+              fontWeight: 'bold',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              color: "#000000",
+            }}><div>{getInitials()}</div></div>)
         }
         {
           audioTrack && (<AudioTrack track={audioTrack.stream} />)
         }
-        {!participant.isMe && isHostOrModerator() && <div style={menuContainerStyle}>
-          <RemoteAudioMuteButton
-            buttonStyle={itemStyle}
-            participant={participant}
-            meetingController={meetingController}
+        <div style={menuContainerStyle}>
+          <RcIconButton
+            size='xsmall'
+            stretchIcon
+            color="neutral.f01"
+            symbol={DragableArea}
+            className={`rc-huddle-drag-participant-${participant.uid}`}
+            style={itemStyle}
           />
-          <RemoteVideoMuteButton
-            buttonStyle={itemStyle}
-            participant={participant}
-            meetingController={meetingController}
+          {!participant.isMe && isHostOrModerator() &&
+            <RemoteAudioMuteButton
+              buttonStyle={itemStyle}
+              participant={participant}
+              meetingController={meetingController}
+            />}
+          {!participant.isMe && isHostOrModerator() &&
+            <RemoteVideoMuteButton
+              buttonStyle={itemStyle}
+              participant={participant}
+              meetingController={meetingController}
+            />}
+          <RcIconButton
+            size='xsmall'
+            stretchIcon
+            color="neutral.f01"
+            symbol={Expand}
+            onMouseDown={resizeHandler}
+            style={rotatedItemStyle}
           />
-        </div>}
+        </div>
       </div>
     </Draggable>
   );
