@@ -6,6 +6,7 @@ import { StartMeetingButton } from './StartMeetingButton';
 import { LocalAudioMuteButton } from './LocalAudioMuteButton';
 import { LocalVideoMuteButton } from './LocalVideoMuteButton';
 import { LeaveButton } from './LeaveButton';
+import Draggable from 'react-draggable';
 
 const menuContainerStyle = {
     background: '#038FC4',
@@ -53,59 +54,61 @@ export function Menu({
     }, false);
 
     return (
-        <div style={menuContainerStyle}>
-            <RcLoading loading={loading}>
-                <div style={{ cursor: 'grab', display: 'inherit' }}>
-                    <RcIcon
-                        className="handle"
-                        variant="plain"
-                        size='large'
-                        color="neutral.f01"
-                        symbol={DragableArea}
-                    />
-                </div>
-                <RcIconButton
-                    variant="plain"
-                    size='large'
-                    stretchIcon
-                    color="neutral.f01"
-                    symbol={RcApp}
-                    onClick={() => { setCollapsed(!collapsed); }}
-                    style={itemStyle}
-                />
-                {!!!room && !collapsed && loggedIn &&
-                    <StartMeetingButton
-                        setLoading={setLoading}
-                        buttonStyle={itemStyle}
-                    />
-                }
-                {!!!room && !collapsed &&
-                    <LogInButton
-                        rcSDK={rcSDK}
-                        loggedIn={loggedIn}
-                        setLoggedIn={setLoggedIn}
-                        buttonStyle={itemStyle}
-                    />
-                }
-                {!!room && !collapsed &&
-                    <div>
-                        <LocalAudioMuteButton
-                            buttonStyle={itemStyle}
-                            localParticipant={localParticipant}
-                            meetingController={meetingController}
-                        />
-                        <LocalVideoMuteButton
-                            buttonStyle={itemStyle}
-                            localParticipant={localParticipant}
-                            meetingController={meetingController}
-                        />
-                        <LeaveButton
-                            buttonStyle={itemStyle}
-                            meetingController={meetingController}
+        <Draggable axis='y' handle=".rc-huddle-menu-handle">
+            <div style={menuContainerStyle}>
+                <RcLoading loading={loading}>
+                    <div style={{ cursor: 'grab', display: 'inherit' }}>
+                        <RcIcon
+                            className="rc-huddle-menu-handle"
+                            variant="plain"
+                            size='large'
+                            color="neutral.f01"
+                            symbol={DragableArea}
                         />
                     </div>
-                }
-            </RcLoading>
-        </div>
+                    <RcIconButton
+                        variant="plain"
+                        size='large'
+                        stretchIcon
+                        color="neutral.f01"
+                        symbol={RcApp}
+                        onClick={() => { setCollapsed(!collapsed); }}
+                        style={itemStyle}
+                    />
+                    {!!!room && !collapsed && loggedIn &&
+                        <StartMeetingButton
+                            setLoading={setLoading}
+                            buttonStyle={itemStyle}
+                        />
+                    }
+                    {!!!room && !collapsed &&
+                        <LogInButton
+                            rcSDK={rcSDK}
+                            loggedIn={loggedIn}
+                            setLoggedIn={setLoggedIn}
+                            buttonStyle={itemStyle}
+                        />
+                    }
+                    {!!room && !collapsed &&
+                        <div>
+                            <LocalAudioMuteButton
+                                buttonStyle={itemStyle}
+                                localParticipant={localParticipant}
+                                meetingController={meetingController}
+                            />
+                            <LocalVideoMuteButton
+                                buttonStyle={itemStyle}
+                                localParticipant={localParticipant}
+                                meetingController={meetingController}
+                            />
+                            <LeaveButton
+                                buttonStyle={itemStyle}
+                                meetingController={meetingController}
+                            />
+                        </div>
+                    }
+                </RcLoading>
+            </div>
+        </Draggable>
     )
 }

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Draggable from 'react-draggable';
 import {
     EngineEvent,
     ErrorCodeType,
@@ -135,14 +134,12 @@ function App({
 
     return (
         <div >
-            <Draggable axis='y' handle=".handle">
-                <Menu
-                    rcSDK={rcSDK}
-                    room={room}
-                    localParticipant={localParticipant}
-                    meetingController={meetingController}
-                />
-            </Draggable>
+            <Menu
+                rcSDK={rcSDK}
+                room={room}
+                localParticipant={localParticipant}
+                meetingController={meetingController}
+            />
             {!!room &&
                 <Room
                     meetingController={meetingController}
