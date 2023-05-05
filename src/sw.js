@@ -1,5 +1,16 @@
-// This is the service worker script, which executes in its own context
-// when the extension is installed or refreshed (or when you access its console).
-// It would correspond to the background script in chrome extensions v2.
+import { initializeApp } from "./firebase/firebase-app.js";
+import { getMessaging, onBackgroundMessage } from './firebase/firebase-messaging-sw.js';
+import { firebaseConfig } from './firebaseConfig.js';
 
-console.log("This prints to the console of the service worker (background script)")
+// Initialize Firebase
+const firebaseApp = initializeApp(firebaseConfig);
+const messaging = getMessaging(firebaseApp);
+
+
+onBackgroundMessage(messaging, (payload) => {
+  console.log('[background.js] Received background message ', payload);
+
+  self.registration.showNotification(payload.data.title, {
+    body: payload.data.body,
+  });
+});
