@@ -12,9 +12,10 @@ import { Room } from './components/Room';
 import { Menu } from './components/Menu';
 
 function App({
-    rcSDK,
-    rcvEngine
+    rcvEngine,
+    rcSDK
 }) {
+    const [loggedIn, setLoggedIn] = useState(false);
     const [meetingController, setMeetingController] = useState(null);
     const [room, setRoom] = useState(null);
     const [participants, setParticipants] = useState([]);
@@ -30,6 +31,22 @@ function App({
         const newParticipants = userController.getMeetingUsers();
         setParticipants(Object.values(newParticipants).filter(p => !p.isDeleted));
     }
+    useEffect(() => {
+        const checkUserLogin = async () => {
+            const isLoggedIn = await rcSDK.platform().loggedIn();
+            setLoggedIn(isLoggedIn);
+        }
+        checkUserLogin();
+
+        chrome.runtime.onMessage.addListener(async (message) => {
+            if (message.loginOptions) {
+                await rcSDK.login(message.loginOptions);
+                setLoggedIn(true)
+            }
+        });
+
+    }, []);
+
     useEffect(() => {
         videoTrackMapRef.current = videoTrackMap;
         audioTrackMapRef.current = audioTrackMap;
@@ -134,20 +151,22 @@ function App({
 
     return (
         <div >
-            <Menu
-                rcSDK={rcSDK}
-                room={room}
-                localParticipant={localParticipant}
-                meetingController={meetingController}
-            />
-            {!!room &&
-                <Room
-                    meetingController={meetingController}
-                    participants={participants}
-                    videoTrackMap={videoTrackMap}
-                    audioTrackMap={audioTrackMap}
-                />
-            }
+            {loggedIn &&
+                <div>
+                    <Menu
+                        room={room}
+                        localParticipant={localParticipant}
+                        meetingController={meetingController}
+                    />
+                    {!!room &&
+                        <Room
+                            meetingController={meetingController}
+                            participants={participants}
+                            videoTrackMap={videoTrackMap}
+                            audioTrackMap={audioTrackMap}
+                        />
+                    }
+                </div>}
         </div>
     );
 }

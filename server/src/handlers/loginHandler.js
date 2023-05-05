@@ -4,8 +4,10 @@ const { UserModel } = require('../models/userModel');
 
 async function login(req, res) {
     const rcAccessToken = req.body.rcAccessToken;
-    const rcExtensionData = await rcAPI.validateAuth({ rcAccessToken: rcAccessToken });
-    if (!!rcExtensionData) {
+    const rcExtensionData = await rcAPI.validateAuth({ accessToken: rcAccessToken });
+    console.log(req.body)
+    const firebaseToken = req.body.firebaseToken;
+    if (!!rcExtensionData && !!firebaseToken) {
         const extensionId = rcExtensionData.id;
         const accountId = rcExtensionData.account.id;
         const jwtToken = jwt.generateJwt({
@@ -14,7 +16,8 @@ async function login(req, res) {
         });
         await UserModel.create({
             id: extensionId,
-            accountId
+            accountId,
+            firebaseToken
         });
         res.status(200).send(jwtToken);
     }

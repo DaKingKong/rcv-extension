@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { RcLoading, RcIconButton, RcIcon } from '@ringcentral/juno';
-import { RcApp, DragableArea } from '@ringcentral/juno-icon';
-import { LogInButton } from './LoginButton';
-import { StartMeetingButton } from './StartMeetingButton';
-import { LocalAudioMuteButton } from './LocalAudioMuteButton';
-import { LocalVideoMuteButton } from './LocalVideoMuteButton';
-import { LeaveButton } from './LeaveButton';
+import { RcLoading, RcIcon, RcButton } from '@ringcentral/juno';
+import { VideoMeeting } from '@ringcentral/juno-icon';
 import Draggable from 'react-draggable';
+import MenuLogo from '../../images/menuLogo.png';
+import DragImage from '../../images/dragImage.png';
+import { LocalMeetingControl } from './LocalMeetingControl';
 
 const menuContainerStyle = {
-    background: '#038FC4',
-    borderRadius: '4px',
-    boxShadow: '0px 0px 5px 1px rgb(0 0 0 / 18%)',
     position: 'fixed',
     bottom: '100px',
     right: '0',
@@ -21,94 +16,65 @@ const menuContainerStyle = {
     alignItems: 'center'
 }
 
-const itemStyle = {
-    margin: '3px'
-}
-
 export function Menu({
-    rcSDK,
     room,
     localParticipant,
     meetingController
 }) {
     const [loading, setLoading] = useState(false);
-    const [collapsed, setCollapsed] = useState(true);
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [showHuddle, setShowHuddle] = useState(false);
 
-    useEffect(() => {
-        const init = async () => {
-            const isLogged = await rcSDK.platform().loggedIn();
-            setLoggedIn(isLogged);
-        };
-        init();
-    }, []);
-
-    window.addEventListener("message", async (event) => {
-        if (event.data && event.data.callbackUri) {
-            console.log(event.data.callbackUri);
-            const loginOptions = rcSDK.parseLoginRedirect(event.data.callbackUri);
-            loginOptions['code_verifier'] = localStorage.getItem('codeVerifier');
-            await rcSDK.login(loginOptions);
-            setLoggedIn(true);
-        }
-    }, false);
 
     return (
         <Draggable axis='y' handle=".rc-huddle-menu-handle">
             <div style={menuContainerStyle}>
                 <RcLoading loading={loading}>
-                    <div style={{ cursor: 'grab', display: 'inherit' }}>
-                        <RcIcon
-                            className="rc-huddle-menu-handle"
+                    {showHuddle ?
+                        <RcButton
+                            startIcon={<RcIcon size='xxlarge' symbol={VideoMeeting} />}
+                            onPointerLeave={() => { setShowHuddle(false) }}
+                            radius="round"
+                            size='xlarge'
+                            onClick={async () => {
+                                setLoading(true);
+                                try {
+                                    await rcvEngine.startInstantMeeting();
+                                } catch (e) {
+                                    console.error(e);
+                                }
+                                setLoading(false);
+                            }}
+                        >
+                            Start Huddle
+                        </RcButton>
+                        :
+                        <RcButton
                             variant="plain"
                             size='large'
-                            color="neutral.f01"
-                            symbol={DragableArea}
+                            style={{ padding: '0px' }}
+                            onPointerEnter={() => { setShowHuddle(true) }}
+                        >
+                            <img src={MenuLogo} />
+                        </RcButton>}
+                    {!!room ?
+                        <LocalMeetingControl
+                            localParticipant={localParticipant}
+                            meetingController={meetingController}
                         />
-                    </div>
-                    <RcIconButton
-                        variant="plain"
-                        size='large'
-                        stretchIcon
-                        color="neutral.f01"
-                        symbol={RcApp}
-                        onClick={() => { setCollapsed(!collapsed); }}
-                        style={itemStyle}
-                    />
-                    {!!!room && !collapsed && loggedIn &&
-                        <StartMeetingButton
-                            setLoading={setLoading}
-                            buttonStyle={itemStyle}
-                        />
-                    }
-                    {!!!room && !collapsed &&
-                        <LogInButton
-                            rcSDK={rcSDK}
-                            loggedIn={loggedIn}
-                            setLoggedIn={setLoggedIn}
-                            buttonStyle={itemStyle}
-                        />
-                    }
-                    {!!room && !collapsed &&
-                        <div>
-                            <LocalAudioMuteButton
-                                buttonStyle={itemStyle}
-                                localParticipant={localParticipant}
-                                meetingController={meetingController}
-                            />
-                            <LocalVideoMuteButton
-                                buttonStyle={itemStyle}
-                                localParticipant={localParticipant}
-                                meetingController={meetingController}
-                            />
-                            <LeaveButton
-                                buttonStyle={itemStyle}
-                                meetingController={meetingController}
-                            />
+                        :
+                        <div style={{ cursor: 'grab', display: 'inherit' }}>
+                            <RcButton
+                                className="rc-huddle-menu-handle"
+                                variant="plain"
+                                size='large'
+                                style={{ padding: '0px' }}
+                            >
+                                <img style={{ pointerEvents: 'none', width: '20px', height: '20px' }} src={DragImage} />
+                            </RcButton>
                         </div>
                     }
                 </RcLoading>
             </div>
-        </Draggable>
+        </Draggable >
     )
 }

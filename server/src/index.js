@@ -6,7 +6,7 @@ const loginHandler = require('./handlers/loginHandler');
 const { UserModel } = require('./models/userModel');
 
 
-const { test } = require('../fcmTest');
+const { sendDataToClient } = require('./lib/fcm');
 
 const app = express();
 app.use(bodyParser.json())
@@ -35,6 +35,10 @@ app.post('/session/check-in', async function (req, res) {
         console.log(e);
         res.status(400).send(e);
     }
+})
+
+app.post('/notification', async function (req, res) {
+    await sendDataToClient({ tokens: req.body.tokens, data: req.body.data });
 })
 
 async function initDB() {

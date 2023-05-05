@@ -19,6 +19,6 @@ async function checkInSession(req, res) {
 }
 
 //WIP
-async function fectchSession(){}
+async function fetchSession(){}
 
 exports.checkInSession = checkInSession;

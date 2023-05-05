@@ -6,14 +6,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RcThemeProvider } from '@ringcentral/juno';
-import { HashRouter } from "react-router-dom";
-import useGlobalStorage from 'use-global-storage';
 import { RcvEngine } from '@ringcentral/video-sdk';
 import SDK from './ringcentral';
 import App from './Root';
 import apiConfig from './config.json';
 
-const rcSDK = new SDK(apiConfig);
+const rcSDK = new SDK({
+  clientId: apiConfig.clientId,
+  server: apiConfig.rcServer,
+  redirectUri: apiConfig.redirectUri
+});
 const rcvEngine = RcvEngine.create(
   {
     httpClient: {
@@ -27,14 +29,9 @@ window.document.body.appendChild(rootElement);
 const root = ReactDOM.createRoot(rootElement);
 
 function Root() {
-  const useStorage = useGlobalStorage({
-    storageOptions: { name: 'rc-video-demo-db' }
-  });
   return (
     <RcThemeProvider>
-      <HashRouter>
-        <App useStorage={useStorage} rcvEngine={rcvEngine} rcSDK={rcSDK} />
-      </HashRouter>
+      <App rcvEngine={rcvEngine} rcSDK={rcSDK} />
     </RcThemeProvider>
   );
 }

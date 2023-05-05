@@ -1,5 +1,3 @@
-//WIP
-
 const admin = require("firebase-admin");
 const serviceAccount =
 {
@@ -21,14 +19,11 @@ admin.initializeApp({
 });
 
 async function sendDataToClient({ tokens, data }) {
-    const topic = 'testTopic';
-    await getMessaging().subscribeToTopic(tokens, topic)
-    await getMessaging().send({
-        data: {
-            title: '123',
-            body: '456'
-        },
-        topic
-    })
+    const reqBody = tokens.map(t => {return {
+        data,
+        token: t
+    }});
+    await getMessaging().sendEach(reqBody);
 }
-const token = 'fElus8a2b1Wz5IVyF1gVl7:APA91bGZTeIZVR3vbg3EwBFb2XsIq4G5PISjgK8PJMKVJZlTVwKwun2IjTGpaD_TlLMNtDsdNMcyl-sCkcM0kVdzIhZZN1eU5zvOUoC7Q_vXNPJ4jJrijRx8zmFCF6OnTt0GIpABn6nU'
+
+exports.sendDataToClient = sendDataToClient;

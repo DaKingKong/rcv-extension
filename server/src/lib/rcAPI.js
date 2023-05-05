@@ -18,3 +18,5 @@ async function validateAuth({ accessToken }) {
         return null;
     }
 }
+
+exports.validateAuth = validateAuth;
