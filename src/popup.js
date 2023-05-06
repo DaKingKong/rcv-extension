@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import axios from 'axios';
 import { RcThemeProvider } from '@ringcentral/juno';
 import SDK from './ringcentral';
 import apiConfig from './config.json';
@@ -16,25 +17,15 @@ const messaging = getMessaging(firebaseApp);
 onMessage(messaging, (payload) => {
     console.log('FCM Message received. ', payload);
 });
-function getFcmToken() {
-    navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
-        getToken(messaging, {
-            vapidKey,
-            serviceWorkerRegistration: serviceWorkerRegistration,
-        }).then((currentToken) => {
-            if (currentToken) {
-                // Send the token to your server to send push notifications.
-                console.log(currentToken);
-            } else {
-                // Show permission request UI
-                console.log('No registration token available. Request permission to generate one.');
-                // ...
-            }
-        }).catch((err) => {
-            console.log('An error occurred while retrieving token. ', err);
-            // ...
-        });
-    });
+async function getFcmToken() {
+    try {
+        const serviceWorkerRegistration = await navigator.serviceWorker.ready;
+        const fcmToken = await getToken(messaging, { vapidKey, serviceWorkerRegistration });
+        return fcmToken;
+    }
+    catch (e) {
+        console.error(e);
+    }
 }
 
 const rootElement = window.document.createElement('root');

@@ -8,7 +8,10 @@ exports.SessionModel = sequelize.define('sessions', {
     type: Sequelize.STRING,
     primaryKey: true,
   },
-  active:{
+  active: {
     type: Sequelize.BOOLEAN
+  },
+  meetingId: {
+    type: Sequelize.STRING
   }
 });

@@ -2,11 +2,8 @@ const jwt = require('../lib/jwt');
 const rcAPI = require('../lib/rcAPI');
 const { UserModel } = require('../models/userModel');
 
-async function login(req, res) {
-    const rcAccessToken = req.body.rcAccessToken;
+async function login({ rcAccessToken, firebaseToken }) {
     const rcExtensionData = await rcAPI.validateAuth({ accessToken: rcAccessToken });
-    console.log(req.body)
-    const firebaseToken = req.body.firebaseToken;
     if (!!rcExtensionData && !!firebaseToken) {
         const extensionId = rcExtensionData.id;
         const accountId = rcExtensionData.account.id;
@@ -17,12 +14,13 @@ async function login(req, res) {
         await UserModel.create({
             id: extensionId,
             accountId,
-            firebaseToken
+            firebaseToken,
+            name: rcExtensionData.name
         });
-        res.status(200).send(jwtToken);
+        return jwtToken;
     }
     else {
-        res.status(400).send('not authorized');
+        return null;
     }
 }
 

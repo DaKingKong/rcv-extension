@@ -5,12 +5,11 @@ export function Popup({
     getFcmToken
 }) {
     return (
-        <div><LogInButton
-            rcSDK={rcSDK}
-        />
-            <div
-                onClick={getFcmToken}
-            >test</div>
+        <div>
+            <LogInButton
+                rcSDK={rcSDK}
+                getFcmToken={getFcmToken}
+            />
         </div>
     )
 }

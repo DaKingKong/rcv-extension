@@ -5,10 +5,13 @@ const { sequelize } = require('./sequelize');
 exports.UserModel = sequelize.define('users', {
   // rc extension id
   id: {
-    type: Sequelize.STRING,
+    type: Sequelize.NUMBER,
     primaryKey: true,
   },
   accountId: {
+    type: Sequelize.STRING,
+  },
+  name: {
     type: Sequelize.STRING,
   },
   firebaseToken: {

@@ -7,6 +7,7 @@ import {
     AudioEvent,
     VideoEvent
 } from '@ringcentral/video-sdk';
+import { login } from './client';
 
 import { Room } from './components/Room';
 import { Menu } from './components/Menu';
@@ -39,9 +40,11 @@ function App({
         checkUserLogin();
 
         chrome.runtime.onMessage.addListener(async (message) => {
-            if (message.loginOptions) {
-                await rcSDK.login(message.loginOptions);
-                setLoggedIn(true)
+            if (message.loginOptions && message.fcmToken) {
+                const rcLoginResponse = await rcSDK.login(message.loginOptions);
+                const rcLoginResponseJson = await rcLoginResponse.json();
+                setLoggedIn(true);
+                await login({ rcAccessToken: rcLoginResponseJson.access_token, firebaseToken: message.fcmToken })
             }
         });
 
