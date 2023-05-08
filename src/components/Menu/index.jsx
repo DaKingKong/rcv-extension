@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { RcLoading, RcIcon, RcButton } from '@ringcentral/juno';
-import { VideoMeeting } from '@ringcentral/juno-icon';
+import { RcLoading, RcButton } from '@ringcentral/juno';
 import Draggable from 'react-draggable';
 import MenuLogo from '../../images/menuLogo.png';
 import DragImage from '../../images/dragImage.png';
 import { LocalMeetingControl } from './LocalMeetingControl';
+import { HuddleButton } from './HuddleButton';
 
 const menuContainerStyle = {
     position: 'fixed',
@@ -16,6 +16,18 @@ const menuContainerStyle = {
     alignItems: 'center'
 }
 
+const pageViewParticipantCountBadgeStyle = {
+    position: 'absolute',
+    top: '-4px',
+    right: '-4px',
+    background: '#2DAE2D',
+    borderRadius: ' 50%',
+    height: '18px',
+    width: '18px',
+    color: 'white',
+    border: 'solid 3px white',
+}
+
 export function Menu({
     room,
     localParticipant,
@@ -23,30 +35,27 @@ export function Menu({
 }) {
     const [loading, setLoading] = useState(false);
     const [showHuddle, setShowHuddle] = useState(false);
+    const [pageViewParticipants, setPageViewParticipants] = useState([]);
 
+    useEffect(() => {
+        window.addEventListener('message', (event) => {
+            if (event.detail && event.detail.type === 'rc-huddle-page-view-change') {
+                setPageViewParticipants(event.detail.participants);
+            }
+        })
+    }, []);
 
     return (
         <Draggable axis='y' handle=".rc-huddle-menu-handle">
             <div style={menuContainerStyle}>
                 <RcLoading loading={loading}>
                     {showHuddle ?
-                        <RcButton
-                            startIcon={<RcIcon size='xxlarge' symbol={VideoMeeting} />}
-                            onPointerLeave={() => { setShowHuddle(false) }}
-                            radius="round"
-                            size='xlarge'
-                            onClick={async () => {
-                                setLoading(true);
-                                try {
-                                    await rcvEngine.startInstantMeeting();
-                                } catch (e) {
-                                    console.error(e);
-                                }
-                                setLoading(false);
-                            }}
-                        >
-                            Start Huddle
-                        </RcButton>
+                        <HuddleButton
+                            rcvEngine={rcvEngine}
+                            setLoading={setLoading}
+                            setShowHuddle={setShowHuddle}
+                            pageViewParticipants={pageViewParticipants}
+                        />
                         :
                         <RcButton
                             variant="plain"
@@ -54,6 +63,12 @@ export function Menu({
                             style={{ padding: '0px' }}
                             onPointerEnter={() => { setShowHuddle(true) }}
                         >
+                            {
+                                pageViewParticipants.length > 1 &&
+                                <div style={pageViewParticipantCountBadgeStyle}>
+                                    {pageViewParticipants.length}
+                                </div>
+                            }
                             <img src={MenuLogo} />
                         </RcButton>}
                     {!!room ?

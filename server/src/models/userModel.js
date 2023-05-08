@@ -13,12 +13,5 @@ exports.UserModel = sequelize.define('users', {
   },
   name: {
     type: Sequelize.STRING,
-  },
-  firebaseToken: {
-    type: Sequelize.STRING,
-  },
-  // platform + doc id
-  sessionId: {
-    type: Sequelize.STRING,
   }
 });

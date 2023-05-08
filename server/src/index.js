@@ -1,13 +1,19 @@
+require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const sessionHandler = require('./handlers/sessionHandler');
 const loginHandler = require('./handlers/loginHandler');
 const { UserModel } = require('./models/userModel');
-const { SessionModel } = require('./models/sessionModel');
-const jwt = require('./lib/jwt');
+const { initializeSocket } = require('./lib/webSocket');
+
+const {
+    PORT: port,
+    APP_HOST: host,
+} = process.env;
 
 const app = express();
+const server = require('http').createServer(app);
 app.use(bodyParser.json())
 
 app.use(cors({
@@ -19,8 +25,7 @@ app.get('/is-alive', (req, res) => { res.send(`OK`); });
 app.post('/login', async function (req, res) {
     try {
         const jwtToken = await loginHandler.login({
-            rcAccessToken: req.body.rcAccessToken,
-            firebaseToken: req.body.firebaseToken
+            rcAccessToken: req.body.rcAccessToken
         });
         if (jwtToken) {
             res.status(200).send(jwtToken);
@@ -35,78 +40,15 @@ app.post('/login', async function (req, res) {
     }
 })
 
-app.get('/session', async function (req, res) {
-    try {
-        const jwtToken = req.query.jwtToken;
-        if (!!jwtToken) {
-            const userData = jwt.decodeJwt(jwtToken);
-            const hasSession = await sessionHandler.fetchSession({
-                platform: req.body.platform,
-                docId: req.body.docId
-            });
-            res.status(200).send(hasSession);
-        }
-        else {
-            res.status(400).send('not authorized');
-        }
-    }
-    catch (e) {
-        console.log(e);
-        res.status(400).send(e);
-    }
-})
-
-app.post('/session/check-in', async function (req, res) {
-    try {
-        const jwtToken = req.query.jwtToken;
-        if (!!jwtToken) {
-            const userData = jwt.decodeJwt(jwtToken);
-            const responseBody = await sessionHandler.checkInSession({
-                extensionId: userData.extensionId,
-                platform: req.body.platform,
-                docId: req.body.docId
-            });
-            res.status(200).send(responseBody);
-        }
-        else {
-            res.status(400).send('not authorized');
-        }
-    }
-    catch (e) {
-        console.log(e);
-        res.status(400).send(e);
-    }
-})
-
-app.post('/session/check-out', async function (req, res) {
-    try {
-        const jwtToken = req.query.jwtToken;
-        if (!!jwtToken) {
-            const userData = jwt.decodeJwt(jwtToken);
-            await sessionHandler.checkOutSession({
-                extensionId: userData.extensionId,
-                platform: req.body.platform,
-                docId: req.body.docId
-            });
-            res.status(200).send('OK');
-        }
-        else {
-            res.status(400).send('not authorized');
-        }
-    }
-    catch (e) {
-        console.log(e);
-        res.status(400).send(e);
-    }
-})
-
 async function initDB() {
     console.log('creating db tables if not exist...');
     await UserModel.sync();
-    await SessionModel.sync();
     console.log('db tables created');
 }
 
 initDB();
+initializeSocket({ server });
 
-exports.server = app;
+server.listen(port, host, () => {
+    console.log(`-> server running at: http://${host}:${port}`);
+});

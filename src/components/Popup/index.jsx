@@ -1,14 +1,12 @@
 import { LogInButton } from './LoginButton';
 
 export function Popup({
-    rcSDK,
-    getFcmToken
+    rcSDK
 }) {
     return (
         <div>
             <LogInButton
                 rcSDK={rcSDK}
-                getFcmToken={getFcmToken}
             />
         </div>
     )

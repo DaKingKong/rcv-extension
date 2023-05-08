@@ -21,7 +21,7 @@ export function Participant({
     margin: '3px'
   }
   const menuContainerStyle = {
-    background: '#038FC4',
+    background: 'rgb(6, 111, 172)',
     borderRadius: '4px',
     boxShadow: '0px 0px 5px 1px rgb(0 0 0 / 18%)',
     display: 'flex',
@@ -89,7 +89,7 @@ export function Participant({
               height: size,
               border: "solid 8px white",
               boxShadow: '0px 0px 5px 1px rgb(0 0 0 / 18%)',
-              background: "#038FC4",
+              background: "rgb(6, 111, 172)",
               fontSize: '60px',
               fontWeight: 'bold',
               display: 'flex',

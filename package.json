@@ -22,12 +22,14 @@
     "sequelize": "^6.31.0",
     "serverless-http": "^3.2.0",
     "shortid": "^2.2.16",
+    "socket.io": "^4.6.1",
+    "socket.io-client": "^4.6.1",
     "styled-components": "^5.3.5",
     "use-global-storage": "^0.1.0"
   },
   "scripts": {
     "ngrok": "ngrok http 6066 ",
-    "server": "node ./server/src/server.js",
+    "server": "node ./server/src/index.js",
     "start": "npm run server",
     "build-ext": "node ./build.js",
     "serverless-build": "node ./server/scripts/serverless-build",

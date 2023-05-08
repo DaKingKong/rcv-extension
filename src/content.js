@@ -42,26 +42,5 @@ root.render(
 );
 
 console.log('content script loaded.');
-chrome.runtime.sendMessage(
-  {
-    type: "onContentInjected"
-  }
-);
-chrome.runtime.onMessage.addListener(
-  function (request, sender, sendResponse) {
-    if (request.type === 'receiveFcmMessage') {
-      console.log('receive fcm message: ', request.payload);
-    }
-  })
-client.checkIn();
 
-window.addEventListener("beforeunload", function (e) {
-  const jwt = localStorage.getItem('rc-huddle-jwt');
-  chrome.runtime.sendMessage({
-    type: "onPageClosed",
-    url: `${apiConfig.server}/session/check-out?jwtToken=${jwt}`,
-    platform: 'Figma',
-    docId: window.location.pathname.split('/file/')[1].split('/')[0]
-  });
-  return true;
-}, false);
+client.checkIn();

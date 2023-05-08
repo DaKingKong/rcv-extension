@@ -3,28 +3,16 @@ import { RcIconButton } from '@ringcentral/juno';
 import { Login, Logout } from '@ringcentral/juno-icon';
 
 export function LogInButton({
-    rcSDK,
-    getFcmToken
+    rcSDK
 }) {
     const [loggedIn, setLoggedIn] = useState(false);
-
-    // useEffect(() => {
-    //     const init = async () => {
-    //         const isLogged = await rcSDK.platform().loggedIn();
-    //         setLoggedIn(isLogged);
-    //     };
-    //     init();
-    // }, []);
-
     window.addEventListener("message", async (event) => {
         if (event.data && event.data.callbackUri) {
             const loginOptions = rcSDK.parseLoginRedirect(event.data.callbackUri);
             loginOptions['code_verifier'] = rcSDK.platform()._codeVerifier;
 
-            const fcmToken = await getFcmToken();
-
             chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-                chrome.tabs.sendMessage(tabs[0].id, { loginOptions, fcmToken });
+                chrome.tabs.sendMessage(tabs[0].id, { loginOptions });
             });
         }
     }, false);

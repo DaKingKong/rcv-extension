@@ -40,11 +40,11 @@ function App({
         checkUserLogin();
 
         chrome.runtime.onMessage.addListener(async (message) => {
-            if (message.loginOptions && message.fcmToken) {
+            if (message.loginOptions) {
                 const rcLoginResponse = await rcSDK.login(message.loginOptions);
                 const rcLoginResponseJson = await rcLoginResponse.json();
                 setLoggedIn(true);
-                await login({ rcAccessToken: rcLoginResponseJson.access_token, firebaseToken: message.fcmToken })
+                await login({ rcAccessToken: rcLoginResponseJson.access_token })
             }
         });
 
