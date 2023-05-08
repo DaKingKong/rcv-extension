@@ -20,17 +20,4 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   if (request.type === "onContentInjected") {
     creatorTabId = sender.tab.id;
   }
-  if (request.type === "onPageClosed") {
-    const postBody = {
-      platform: request.platform,
-      docId: request.docId
-    }
-    const checkOutResponse = await fetch(request.url,
-      {
-        method: 'POST',
-        body: postBody
-      });
-    console.log('checked out: ', checkOutResponse.data)
-    sendResponse({ result: 'ok' });
-  }
 })

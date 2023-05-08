@@ -77,7 +77,7 @@ async function syncSession({ allUserInSession }) {
         return u.firebaseToken
     })
     if (names.length > 0) {
-        await sendDataToClient({ tokens, data: { names: names.toString() }, type: 'asyncSession' });
+        await sendDataToClient({ tokens, data: { names: names.toString() }, type: 'syncSession' });
     }
 }
 

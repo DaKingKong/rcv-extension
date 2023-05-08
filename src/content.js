@@ -55,13 +55,23 @@ chrome.runtime.onMessage.addListener(
   })
 client.checkIn();
 
-window.addEventListener("beforeunload", function (e) {
+document.addEventListener('visibilitychange', function () {
   const jwt = localStorage.getItem('rc-huddle-jwt');
-  chrome.runtime.sendMessage({
-    type: "onPageClosed",
-    url: `${apiConfig.server}/session/check-out?jwtToken=${jwt}`,
-    platform: 'Figma',
-    docId: window.location.pathname.split('/file/')[1].split('/')[0]
-  });
-  return true;
-}, false);
+  if(jwt)
+  {
+    if (document.visibilityState === 'hidden') {
+      navigator.sendBeacon(`${apiConfig.server}/session/check-out?jwtToken=${jwt}`,
+        {
+          platform: 'Figma',
+          docId: window.location.pathname.split('/file/')[1].split('/')[0]
+        });
+    }
+    if (document.visibilityState === 'visible') {
+      navigator.sendBeacon(`${apiConfig.server}/session/check-in?jwtToken=${jwt}`,
+        {
+          platform: 'Figma',
+          docId: window.location.pathname.split('/file/')[1].split('/')[0]
+        });
+    }
+  }
+});

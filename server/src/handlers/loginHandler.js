@@ -11,12 +11,21 @@ async function login({ rcAccessToken, firebaseToken }) {
             accountId,
             extensionId
         });
-        await UserModel.create({
-            id: extensionId,
-            accountId,
-            firebaseToken,
-            name: rcExtensionData.name
-        });
+        const existingUser = await UserModel.findByPk(extensionId);
+        if (existingUser) {
+            await existingUser.update({
+                firebaseToken
+            })
+        }
+        else
+        {
+            await UserModel.create({
+                id: extensionId,
+                accountId,
+                firebaseToken,
+                name: rcExtensionData.name
+            });
+        }
         return jwtToken;
     }
     else {
