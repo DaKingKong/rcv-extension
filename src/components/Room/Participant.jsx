@@ -5,13 +5,15 @@ import { VideoTrack } from './VideoTrack';
 import { RemoteAudioMuteButton } from './RemoteAudioMuteButton';
 import { RemoteVideoMuteButton } from './RemoteVideoMuteButton';
 import { RcIconButton } from '@ringcentral/juno';
-import { Expand, DragableArea } from '@ringcentral/juno-icon';
+import { Expand } from '@ringcentral/juno-icon';
+import Crown from '../../images/crown.png';
 
 export function Participant({
   participant,
   videoTrack,
   audioTrack,
-  meetingController
+  meetingController,
+  index
 }) {
   const itemStyle = {
     margin: '3px'
@@ -21,7 +23,7 @@ export function Participant({
     margin: '3px'
   }
   const menuContainerStyle = {
-    background: 'rgb(6, 111, 172)',
+    background: 'rgb(47,47,47)',
     borderRadius: '4px',
     boxShadow: '0px 0px 5px 1px rgb(0 0 0 / 18%)',
     display: 'flex',
@@ -38,10 +40,16 @@ export function Participant({
     alignItems: 'center',
     flexDirection: 'column',
     position: 'absolute',
+    top: '0',
+    left: `${230 * index}px`
   }
+
   const [size, setSize] = useState(200);
 
   function getInitials() {
+    if (!!!participant.displayName) {
+      return '';
+    }
     const nameSegments = participant.displayName.split(' ');
     let initials = '';
     for (const seg of nameSegments) {
@@ -55,6 +63,13 @@ export function Participant({
     const me = userController.getMyself();
     return me.isHost || me.isModerator;
   }
+
+  function isParticipantHost() {
+    const userController = meetingController.getUserController();
+    const user = userController.getMeetingUserById(participant.uid);
+    return user.isHost;
+  }
+
   const resizeHandler = (mouseDownEvent) => {
     const startSize = size;
     const startPosition = { x: mouseDownEvent.pageX, y: mouseDownEvent.pageY };
@@ -77,39 +92,53 @@ export function Participant({
   return (
     <Draggable handle={`.rc-huddle-drag-participant-${participant.uid}`}>
       <div style={draggableStyle}>
+        {isParticipantHost() && <img src={Crown} style={{
+          height: size * 0.15,
+          width: size * 0.15,
+          position: 'absolute',
+          left: '7%',
+          top: '7%',
+        }}></img>}
         {
           videoTrack && videoTrack.stream && videoTrack.stream.active ?
-            (<VideoTrack track={videoTrack.stream} size={size} />)
+            (<div className={`rc-huddle-drag-participant-${participant.uid}`} style={{ cursor: 'grab' }}>
+              <VideoTrack track={videoTrack.stream} size={size} />
+            </div>)
             :
             (<div style={{
-              pointerEvents: 'none',
-              fontFamily: 'sans-serif',
+              cursor: 'grab',
               width: size,
               borderRadius: '50%',
               height: size,
               border: "solid 8px white",
               boxShadow: '0px 0px 5px 1px rgb(0 0 0 / 18%)',
-              background: "rgb(6, 111, 172)",
-              fontSize: '60px',
-              fontWeight: 'bold',
+              background: "#2F2F2F",
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               color: "#000000",
-            }}><div>{getInitials()}</div></div>)
+            }}
+              className={`rc-huddle-drag-participant-${participant.uid}`}
+            >
+              <div style={{
+                fontFamily: 'sans-serif',
+                width: size * 0.5,
+                borderRadius: '50%',
+                height: size * 0.5,
+                background: "rgb(6, 111, 172)",
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                color: "#000000",
+              }}>
+                <div style={{ color: 'white', fontSize: '30px', fontWeight: 'bold' }}>{getInitials()}</div>
+              </div>
+            </div>)
         }
         {
           audioTrack && (<AudioTrack track={audioTrack.stream} />)
         }
         <div style={menuContainerStyle}>
-          <RcIconButton
-            size='xsmall'
-            stretchIcon
-            color="neutral.f01"
-            symbol={DragableArea}
-            className={`rc-huddle-drag-participant-${participant.uid}`}
-            style={itemStyle}
-          />
           {!participant.isMe && isHostOrModerator() &&
             <RemoteAudioMuteButton
               buttonStyle={itemStyle}
@@ -132,6 +161,6 @@ export function Participant({
           />
         </div>
       </div>
-    </Draggable>
+    </Draggable >
   );
 }

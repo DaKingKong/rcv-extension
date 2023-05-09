@@ -11,6 +11,7 @@ import { login } from './client';
 
 import { Room } from './components/Room';
 import { Menu } from './components/Menu';
+import { joinHuddle, leftHuddle } from './client';
 
 function App({
     rcvEngine,
@@ -137,12 +138,16 @@ function App({
                 await audioController.enableAudio(true);
                 console.log(meetingInfo);
                 console.log(meetingInfo.meetingId);
+                if (!userController.getMyself().isHost) {
+                    joinHuddle();
+                }
             }
         };
         const onMeetingLeft = () => {
             setRoom(null);
             setMeetingController(null);
             setParticipants([]);
+            leftHuddle();
         };
         rcvEngine.on(EngineEvent.MEETING_JOINED, onMeetingJoined);
         rcvEngine.on(EngineEvent.MEETING_LEFT, onMeetingLeft);

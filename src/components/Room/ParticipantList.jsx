@@ -1,7 +1,4 @@
 import React from 'react';
-import {
-  RcList,
-} from '@ringcentral/juno';
 
 import { Participant } from './Participant';
 
@@ -12,16 +9,17 @@ export function ParticipantList({
   audioTrackMap
 }) {
   return (
-    <RcList>
-      {participants.map(participant => (
+    <div>
+      {participants.map((participant, i) => (
         <Participant
           key={participant.uid}
           participant={participant}
           videoTrack={videoTrackMap[participant.uid]}
           audioTrack={audioTrackMap[participant.uid]}
           meetingController={meetingController}
+          index={i}
         />
       ))}
-    </RcList>
+    </div>
   );
 }

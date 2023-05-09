@@ -3,6 +3,11 @@ const jwt = require('./jwt');
 const { UserModel } = require('../models/userModel')
 const sockets = [];
 const sessions = [];
+
+// session = sessionId, active
+// socket = extensionId, platform, docId, socket
+
+
 const initializeSocket = function ({ server }) {
     const io = SocketIO(server, {
         cors: {
@@ -28,8 +33,38 @@ const initializeSocket = function ({ server }) {
                     socket.send('pong');
                 }
             }
-            const onAction = (action) => {
-
+            const onAction = async (action) => {
+                switch (action.type) {
+                    case 'startHuddle':
+                        const activatedSession = sessions.find(s => s.id === `${platform}-${docId}`);
+                        const activatedSessionIndex = sessions.indexOf(activatedSession);
+                        sessions[activatedSessionIndex].active = true;
+                        sessions[activatedSessionIndex].meetingId = action.data.meetingId;
+                        sessions[activatedSessionIndex].hostname = action.data.hostname;
+                        sessions[activatedSessionIndex].participantCount = 1;
+                        await syncSession({ session: activatedSession, platform, docId });
+                        break;
+                    case 'joinHuddle':
+                        const ongoingSession = sessions.find(s => s.id === `${platform}-${docId}`);
+                        const ongoingSessionIndex = sessions.indexOf(ongoingSession);
+                        sessions[ongoingSessionIndex].participantCount++;
+                        break;
+                    case 'getHuddle':
+                        const getSession = sessions.find(s => s.id === `${platform}-${docId}`);
+                        await syncSession({ session: getSession, platform, docId });
+                        break;
+                    case 'leftHuddle':
+                        const leftSession = sessions.find(s => s.id === `${platform}-${docId}`);
+                        const leftSessionIndex = sessions.indexOf(leftSession);
+                        sessions[leftSessionIndex].participantCount--;
+                        if (sessions[leftSessionIndex].participantCount === 0) {
+                            sessions[leftSessionIndex].active = false;
+                            sessions[leftSessionIndex].meetingId = '';
+                            sessions[leftSessionIndex].hostname = '';
+                        }
+                        await syncSession({ session: leftSession, platform, docId });
+                        break;
+                }
             }
             const onDisconnect = async (reason) => {
                 console.log('socket disconnected: ', reason);
@@ -58,7 +93,7 @@ async function onClientCheckIn({ platform, docId }) {
     const sessionId = platform + '-' + docId;
     const existingSession = sessions.find(s => s.id == sessionId);
     if (existingSession) {
-        await syncSession({ active: existingSession.active, platform, docId });
+        await syncSession({ session: existingSession, platform, docId });
     }
     else {
         // create a new session for this doc
@@ -72,10 +107,11 @@ async function onClientCheckIn({ platform, docId }) {
 async function onClientCheckOut({ platform, docId }) {
     const sessionId = platform + '-' + docId;
     const existingSession = sessions.find(s => s.id == sessionId);
-    await syncSession({ active: existingSession.active, platform, docId });
+    await syncSession({ session: existingSession, platform, docId });
 }
 
-async function syncSession({ active, platform, docId }) {
+async function syncSession({ session, platform, docId }) {
+    console.log(session);
     // get all in-session users
     const inSessionSockets = sockets.filter(s => s.platform === platform && s.docId === docId);
     const inSessionExtensionIds = inSessionSockets.map(s => { return s.extensionId; });
@@ -90,7 +126,9 @@ async function syncSession({ active, platform, docId }) {
         inSessionSocket.socket.emit('action', {
             type: 'syncSession',
             data: {
-                active,
+                active: session.active,
+                meetingId: session.meetingId ?? '',
+                hostname: session.hostname ?? '',
                 participants: inSessionUserNames
             }
         })

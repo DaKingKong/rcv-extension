@@ -2,7 +2,7 @@ import axios from 'axios';
 import apiConfig from './config.json';
 import { io } from 'socket.io-client';
 
-let webSocket = null;
+let socket = null;
 
 async function login({ rcAccessToken, firebaseToken }) {
     const postBody = {
@@ -21,8 +21,36 @@ function checkIn() {
     }
 }
 
+function startHuddle({ meetingId, hostname }) {
+    socket.emit('action', {
+        type: 'startHuddle',
+        data: {
+            meetingId,
+            hostname
+        }
+    });
+}
+
+function joinHuddle() {
+    socket.emit('action', {
+        type: 'joinHuddle'
+    })
+}
+
+function getHuddle() {
+    socket.emit('action', {
+        type: 'getHuddle'
+    });
+}
+
+function leftHuddle() {
+    socket.emit('action', {
+        type: 'leftHuddle'
+    })
+}
+
 function registerWebSocket({ jwt }) {
-    const socket = io(`${apiConfig.server}`, {
+    socket = io(`${apiConfig.server}`, {
         transports: ['websocket'],
         auth: {
             jwt,
@@ -53,14 +81,29 @@ function registerWebSocket({ jwt }) {
         switch (action.type) {
             case 'syncSession':
                 const sessionActive = action.data.active;
+                const sessionMeetingId = action.data.meetingId;
+                const sessionHostname = action.data.hostname;
                 const participants = action.data.participants;
-                window.dispatchEvent( new CustomEvent('message',{
+                window.dispatchEvent(new CustomEvent('message', {
                     detail: {
                         type: 'rc-huddle-page-view-change',
-                        participants
+                        participants,
+                        meetingId: sessionMeetingId,
+                        hostname: sessionHostname
                     }
                 }));
                 console.log('participants', participants);
+                break;
+            case 'startHuddleNotification':
+                const meetingId = action.data.meetingId;
+                const hostname = action.data.hostname;
+                window.dispatchEvent(new CustomEvent('message', {
+                    detail: {
+                        type: 'rc-huddle-update-huddle',
+                        meetingId,
+                        hostname
+                    }
+                }));
                 break;
         }
     });
@@ -78,10 +121,9 @@ function registerWebSocket({ jwt }) {
     return socket;
 }
 
-function getSocket() {
-    return webSocket;
-}
-
 exports.login = login;
 exports.checkIn = checkIn;
-exports.getSocket = getSocket;
+exports.startHuddle = startHuddle;
+exports.joinHuddle = joinHuddle;
+exports.getHuddle = getHuddle;
+exports.leftHuddle = leftHuddle;
