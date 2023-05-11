@@ -19,4 +19,24 @@ async function validateAuth({ accessToken }) {
     }
 }
 
+async function getGlipProfileImage({ accessToken }) {
+    try {
+        const extensionProfileImageResp = await axios.get(`${process.env.RC_SERVER}/team-messaging/v1/persons/~`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        if (extensionProfileImageResp.status === 200) {
+            return extensionProfileImageResp.data;
+        }
+        else {
+            console.log('cannot find rc extension profile image')
+            return null;
+        }
+    }
+    catch (e) {
+        return null;
+    }
+}
+
 exports.validateAuth = validateAuth;

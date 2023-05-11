@@ -58,7 +58,7 @@ export function HuddleButton({
                         radius="round"
                         size='xlarge'
                         onClick={async () => {
-                            setLoading(true);
+                            setButtonLoading(true);
                             try {
                                 const meetingController = await rcvEngine.startInstantMeeting();
                                 const meetingInfo = await meetingController.getMeetingInfo();
@@ -66,7 +66,7 @@ export function HuddleButton({
                             } catch (e) {
                                 console.error(e);
                             }
-                            setLoading(false);
+                            setButtonLoading(false);
                         }}
                     >
                         Start Huddle

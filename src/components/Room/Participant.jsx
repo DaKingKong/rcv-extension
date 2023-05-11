@@ -67,7 +67,10 @@ export function Participant({
   function isParticipantHost() {
     const userController = meetingController.getUserController();
     const user = userController.getMeetingUserById(participant.uid);
-    return user.isHost;
+    if (user) {
+      return user.isHost;
+    }
+    return false;
   }
 
   const resizeHandler = (mouseDownEvent) => {

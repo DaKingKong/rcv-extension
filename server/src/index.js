@@ -1,4 +1,3 @@
-require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -7,10 +6,6 @@ const loginHandler = require('./handlers/loginHandler');
 const { UserModel } = require('./models/userModel');
 const { initializeSocket } = require('./lib/webSocket');
 
-const {
-    PORT: port,
-    APP_HOST: host,
-} = process.env;
 
 const app = express();
 const server = require('http').createServer(app);
@@ -49,6 +44,5 @@ async function initDB() {
 initDB();
 initializeSocket({ server });
 
-server.listen(port, host, () => {
-    console.log(`-> server running at: http://${host}:${port}`);
-});
+exports.app = app;
+exports.server = server;
