@@ -87,7 +87,7 @@ const initializeSocket = function ({ server }) {
         }
     });
 
-    console.log('websocket server initialized');
+    console.log(`websocket server initialized on path ${io._path}`);
 }
 
 async function onClientCheckIn({ platform, docId }) {
