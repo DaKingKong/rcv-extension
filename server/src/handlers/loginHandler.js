@@ -11,11 +11,14 @@ async function login({ rcAccessToken }) {
             accountId,
             extensionId
         });
-        await UserModel.create({
-            id: extensionId,
-            accountId,
-            name: rcExtensionData.name
-        });
+        const existingUser = await UserModel.findByPk(extensionId);
+        if (!existingUser) {
+            await UserModel.create({
+                id: extensionId,
+                accountId,
+                name: rcExtensionData.name
+            });
+        }
         return jwtToken;
     }
     else {

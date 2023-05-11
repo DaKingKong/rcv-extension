@@ -11,7 +11,8 @@ const sessions = [];
 const initializeSocket = function ({ server }) {
     const io = SocketIO(server, {
         cors: {
-            origin: '*',
+            origins: "*:*",
+            methods: ["GET", "POST"]
         },
     });
 
