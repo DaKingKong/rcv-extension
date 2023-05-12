@@ -13,10 +13,12 @@ async function login({ rcAccessToken }) {
         });
         const existingUser = await UserModel.findByPk(extensionId);
         if (!existingUser) {
+            const profileImageUrl = await rcAPI.getGlipProfileImage({ accessToken: rcAccessToken });
             await UserModel.create({
                 id: extensionId,
                 accountId,
-                name: rcExtensionData.name
+                name: rcExtensionData.name,
+                profileImageUrl
             });
         }
         return jwtToken;

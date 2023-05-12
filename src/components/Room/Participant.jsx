@@ -145,7 +145,20 @@ export function Participant({
                 {headshotUrl === '' ?
                   <div style={{ color: 'white', fontSize: '30px', fontWeight: 'bold' }}>{getInitials()}</div>
                   :
-                  <img src={headshotUrl} />
+                  <img style={{
+                    cursor: 'grab',
+                    width: size,
+                    borderRadius: '50%',
+                    height: size,
+                    border: `solid 8px ${(isActiveSpeaker) ? 'rgb(45, 174, 45)' : 'white'}`,
+                    boxShadow: '0px 0px 5px 1px rgb(0 0 0 / 18%)',
+                    background: "#2F2F2F",
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    color: "#000000",
+                    pointerEvents: 'none'
+                  }} src={headshotUrl} />
                 }
               </div>
             </div>)

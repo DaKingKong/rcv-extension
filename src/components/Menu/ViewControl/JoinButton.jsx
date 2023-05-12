@@ -15,13 +15,16 @@ const containerStyle = {
 
 export function JoinButton({
     hostname,
-    meetingId
+    meetingId,
+    pageViewParticipants
 }) {
     const [buttonLoading, setButtonLoading] = useState(false);
+
+    const hostAsParticipant = pageViewParticipants.find(p => p.name === hostname);
     return (
         <div style={containerStyle}>
             <ViewerList
-                viewers={[hostname]}
+                viewers={[hostAsParticipant]}
             />
             <RcButton
                 startIcon={<RcIcon size='xlarge' symbol={VideoMeeting} />}

@@ -57,7 +57,7 @@ export function ViewerList({
             let counter = 0;
             for (const viewer of viewers) {
                 counter++;
-                style = viewer.image ?
+                style = viewer?.image ?
                     getProfileImageStyle({ index: counter, count: viewers.length }) :
                     getInitialsStyle({ index: counter, count: viewers.length });
                 if (counter > 4) {
@@ -65,22 +65,22 @@ export function ViewerList({
                 }
                 else {
                     result.push(
-                        viewer.image ?
-                            <img key={counter} style={style} src={viewer.image} />
+                        viewer?.image ?
+                            <img key={counter} style={style} src={viewer?.image} />
                             :
-                            <div key={counter} style={style}>{getInitials({ name: viewer })}</div>);
+                            <div key={counter} style={style}>{getInitials({ name: viewer?.name })}</div>);
                 }
             }
         }
         else {
             console.log(viewers)
             return viewers.map((v, i) => {
-                const style = v.image ?
+                const style = v?.image ?
                     getProfileImageStyle({ index: i, count: viewers.length }) :
                     getInitialsStyle({ index: i, count: viewers.length });
-                const result = v.image ?
-                    <img key={i} style={style} src={v.image} /> :
-                    <div key={i} style={style}>{getInitials({ name: v.name })}</div>
+                const result = v?.image ?
+                    <img key={i} style={style} src={v?.image} /> :
+                    <div key={i} style={style}>{getInitials({ name: v?.name })}</div>
                 return result;
             })
         }

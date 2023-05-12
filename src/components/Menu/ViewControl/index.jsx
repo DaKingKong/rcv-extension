@@ -52,6 +52,7 @@ export function ViewControl({
                 <JoinButton
                     hostname={hostname}
                     meetingId={meetingId}
+                    pageViewParticipants={pageViewParticipants}
                 /> :
                 (
                     showHuddle ?

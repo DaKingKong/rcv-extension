@@ -13,5 +13,8 @@ exports.UserModel = sequelize.define('users', {
   },
   name: {
     type: Sequelize.STRING,
+  },
+  profileImageUrl:{
+    type: Sequelize.STRING,
   }
 });

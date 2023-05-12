@@ -146,6 +146,7 @@ function App({
                 if (!userController.getMyself().isHost) {
                     joinHuddle();
                 }
+                await audioController.unmuteLocalAudioStream();
             }
         };
         const onMeetingLeft = () => {

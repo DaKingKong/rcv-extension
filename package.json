@@ -4,7 +4,7 @@
   "dependencies": {
     "@ringcentral/juno": "2.19.2",
     "@ringcentral/juno-icon": "^1.35.0",
-    "@ringcentral/video-sdk": "^0.10.0",
+    "@ringcentral/video-sdk": "^0.10.5",
     "axios": "^1.3.6",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",

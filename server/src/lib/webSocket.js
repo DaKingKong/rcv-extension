@@ -122,7 +122,7 @@ async function syncSession({ session, platform, docId }) {
             id: inSessionExtensionIds
         }
     });
-    const inSessionUserData = inSessionUsers.map(u => { return { name: u.name }; });
+    const inSessionUserData = inSessionUsers.map(u => { return { name: u.name, image: u.profileImageUrl ?? '' }; });
     for (const inSessionSocket of inSessionSockets) {
         // broadcast member info
         inSessionSocket.socket.emit('action', {
