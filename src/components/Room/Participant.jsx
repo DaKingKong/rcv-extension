@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Draggable from 'react-draggable';
 import { AudioTrack } from './AudioTrack';
 import { VideoTrack } from './VideoTrack';
@@ -13,7 +13,8 @@ export function Participant({
   videoTrack,
   audioTrack,
   meetingController,
-  index
+  index,
+  isActiveSpeaker
 }) {
   const itemStyle = {
     margin: '3px'
@@ -45,7 +46,14 @@ export function Participant({
   }
 
   const [size, setSize] = useState(200);
-
+  const [headshotUrl, setHeadshot] = useState('');
+  useEffect(() => {
+    const getHeadshot = async () => {
+      const headshot = await participant.getHeadshotUrl();
+      setHeadshot(headshot);
+    }
+    getHeadshot();
+  }, []);
   function getInitials() {
     if (!!!participant.displayName) {
       return '';
@@ -105,7 +113,7 @@ export function Participant({
         {
           videoTrack && videoTrack.stream && videoTrack.stream.active ?
             (<div className={`rc-huddle-drag-participant-${participant.uid}`} style={{ cursor: 'grab' }}>
-              <VideoTrack track={videoTrack.stream} size={size} />
+              <VideoTrack track={videoTrack.stream} size={size} isActiveSpeaker={isActiveSpeaker} />
             </div>)
             :
             (<div style={{
@@ -113,7 +121,7 @@ export function Participant({
               width: size,
               borderRadius: '50%',
               height: size,
-              border: "solid 8px white",
+              border: `solid 8px ${(isActiveSpeaker) ? 'rgb(45, 174, 45)' : 'white'}`,
               boxShadow: '0px 0px 5px 1px rgb(0 0 0 / 18%)',
               background: "#2F2F2F",
               display: 'flex',
@@ -134,7 +142,11 @@ export function Participant({
                 alignItems: 'center',
                 color: "#000000",
               }}>
-                <div style={{ color: 'white', fontSize: '30px', fontWeight: 'bold' }}>{getInitials()}</div>
+                {headshotUrl === '' ?
+                  <div style={{ color: 'white', fontSize: '30px', fontWeight: 'bold' }}>{getInitials()}</div>
+                  :
+                  <img src={headshotUrl} />
+                }
               </div>
             </div>)
         }
@@ -142,13 +154,13 @@ export function Participant({
           audioTrack && (<AudioTrack track={audioTrack.stream} />)
         }
         <div style={menuContainerStyle}>
-          {!participant.isMe && isHostOrModerator() &&
+          {!participant.isMe && isHostOrModerator() && !participant.isAudioMuted &&
             <RemoteAudioMuteButton
               buttonStyle={itemStyle}
               participant={participant}
               meetingController={meetingController}
             />}
-          {!participant.isMe && isHostOrModerator() &&
+          {!participant.isMe && isHostOrModerator() && !participant.isVideoMuted &&
             <RemoteVideoMuteButton
               buttonStyle={itemStyle}
               participant={participant}

@@ -68,6 +68,7 @@ export function HuddleButton({
                             }
                             setButtonLoading(false);
                         }}
+                        loading={buttonLoading}
                     >
                         Start Huddle
                     </RcButton>

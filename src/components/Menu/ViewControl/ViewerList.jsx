@@ -21,7 +21,7 @@ export function ViewerList({
         return initials;
     }
 
-    function getProfileImageStyle({ index, count }) {
+    function getInitialsStyle({ index, count }) {
         return {
             pointerEvents: 'none',
             fontFamily: 'sans-serif',
@@ -39,27 +39,49 @@ export function ViewerList({
             zIndex: (count - index).toString()
         }
     }
+    function getProfileImageStyle({ index, count }) {
+        return {
+            pointerEvents: 'none',
+            width: '20px',
+            borderRadius: '50%',
+            height: '20px',
+            transform: `translateX(${30 * index}%)`,
+            zIndex: (count - index).toString()
+        }
+    }
 
     function getListItem({ viewers }) {
         if (viewers.length > 4) {
-            let style = getProfileImageStyle({ index: 0, count: viewers.length });
+            let style = getInitialsStyle({ index: 0, count: viewers.length });
             let result = [<div key={v} style={style}>{getInitials({ name: `+${viewers.length - 4}` })}</div>];
             let counter = 0;
             for (const viewer of viewers) {
                 counter++;
-                style = getProfileImageStyle({ index: counter, count: viewers.length });
+                style = viewer.image ?
+                    getProfileImageStyle({ index: counter, count: viewers.length }) :
+                    getInitialsStyle({ index: counter, count: viewers.length });
                 if (counter > 4) {
                     return result;
                 }
                 else {
-                    result.push(<div key={counter} style={style}>{getInitials({ name: viewer })}</div>);
+                    result.push(
+                        viewer.image ?
+                            <img key={counter} style={style} src={viewer.image} />
+                            :
+                            <div key={counter} style={style}>{getInitials({ name: viewer })}</div>);
                 }
             }
         }
         else {
+            console.log(viewers)
             return viewers.map((v, i) => {
-                let style = getProfileImageStyle({ index: i, count: viewers.length });
-                return <div key={i} style={style}>{getInitials({ name: v })}</div>
+                const style = v.image ?
+                    getProfileImageStyle({ index: i, count: viewers.length }) :
+                    getInitialsStyle({ index: i, count: viewers.length });
+                const result = v.image ?
+                    <img key={i} style={style} src={v.image} /> :
+                    <div key={i} style={style}>{getInitials({ name: v.name })}</div>
+                return result;
             })
         }
     }

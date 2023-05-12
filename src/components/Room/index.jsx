@@ -11,7 +11,9 @@ export function Room({
     meetingController,
     participants,
     videoTrackMap,
-    audioTrackMap
+    audioTrackMap,
+    activeSpeakerId,
+    localParticipant
 }) {
     return (
         <div style={style}>
@@ -20,6 +22,8 @@ export function Room({
                 participants={participants}
                 videoTrackMap={videoTrackMap}
                 audioTrackMap={audioTrackMap}
+                activeSpeakerId={activeSpeakerId}
+                localParticipant={localParticipant}
             />
         </div>
     );

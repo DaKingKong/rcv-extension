@@ -15,12 +15,12 @@ export function RemoteVideoMuteButton({
             symbol={participant && !participant.isVideoMuted ? Videocam : VideocamOff}
             onClick={async () => {
                 const videoController = meetingController.getVideoController();
-                if (participant && participant.isVideoMuted) {
-                    await videoController.unmuteRemoteVideoStream(participant.uid);
-                }
-                else {
-                    await videoController.muteRemoteVideoStream(participant.uid);
-                }
+                // if (participant && participant.isVideoMuted) {
+                //     await videoController.unmuteRemoteVideoStream(participant.uid);
+                // }
+                // else {
+                await videoController.muteRemoteVideoStream(participant.uid);
+                // }
             }}
             style={buttonStyle}
         />

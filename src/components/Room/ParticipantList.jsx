@@ -6,7 +6,9 @@ export function ParticipantList({
   meetingController,
   participants,
   videoTrackMap,
-  audioTrackMap
+  audioTrackMap,
+  activeSpeakerId,
+  localParticipant
 }) {
   return (
     <div>
@@ -18,6 +20,10 @@ export function ParticipantList({
           audioTrack={audioTrackMap[participant.uid]}
           meetingController={meetingController}
           index={i}
+          isActiveSpeaker={
+            localParticipant.uid !== participant.uid && participant.uid === activeSpeakerId && !participant.isAudioMuted ||
+            localParticipant.uid === participant.uid && !localParticipant.isAudioMuted
+          }
         />
       ))}
     </div>

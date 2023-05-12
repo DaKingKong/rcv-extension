@@ -44,6 +44,8 @@ export function LocalMeetingControl({
                     <LocalAudioMuteButton
                         buttonStyle={itemStyle}
                         buttonTextStyle={itemTextStyle}
+                        localParticipant={localParticipant}
+                        meetingController={meetingController}
                     />
                     <LocalVideoMuteButton
                         buttonStyle={itemStyle}

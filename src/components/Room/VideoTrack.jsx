@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-export function VideoTrack({ track, size }) {
+export function VideoTrack({ track, size, isActiveSpeaker }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -24,6 +24,6 @@ export function VideoTrack({ track, size }) {
     height: size,
     borderRadius: '50%',
     objectFit: 'cover',
-    border: 'solid 8px white'
+    border: `solid 8px ${isActiveSpeaker ? 'rgb(45, 174, 45)' : 'white'}`
   }} ref={ref} />;
 }

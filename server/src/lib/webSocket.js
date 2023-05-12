@@ -18,6 +18,7 @@ const initializeSocket = function ({ server }) {
 
     io.on('connection', async (socket) => {
         try {
+            console.log('new ws client connecting...')
             const jwtToken = socket.handshake.auth.jwt;
             const userInfo = jwt.decodeJwt(jwtToken);
             const platform = socket.handshake.auth.platform;
@@ -121,7 +122,7 @@ async function syncSession({ session, platform, docId }) {
             id: inSessionExtensionIds
         }
     });
-    const inSessionUserNames = inSessionUsers.map(u => { return u.name; });
+    const inSessionUserData = inSessionUsers.map(u => { return { name: u.name }; });
     for (const inSessionSocket of inSessionSockets) {
         // broadcast member info
         inSessionSocket.socket.emit('action', {
@@ -130,7 +131,7 @@ async function syncSession({ session, platform, docId }) {
                 active: session.active,
                 meetingId: session.meetingId ?? '',
                 hostname: session.hostname ?? '',
-                participants: inSessionUserNames
+                participants: inSessionUserData
             }
         })
     }

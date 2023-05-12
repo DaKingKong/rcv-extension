@@ -21,6 +21,7 @@ function App({
     const [meetingController, setMeetingController] = useState(null);
     const [room, setRoom] = useState(null);
     const [participants, setParticipants] = useState([]);
+    const [activeSpeakerId, setActiveSpeakerId] = useState('');
     const [localParticipant, setLocalParticipant] = useState(null);
     const [videoTrackMap, setVideoTrackMap] = useState({});
     const videoTrackMapRef = useRef(videoTrackMap);
@@ -60,6 +61,9 @@ function App({
         const onParticipantsUpdated = () => {
             refreshParticipants();
         };
+        const onActiveSpeakerChanged = (activeSpeaker) => {
+            setActiveSpeakerId(activeSpeaker.uid);
+        }
         const onMeetingJoined = async (meetingId, errorCode) => {
             if (errorCode === ErrorCodeType.ERR_OK) {
                 const newMeetingController = rcvEngine.getMeetingController();
@@ -72,6 +76,7 @@ function App({
                 userController.on(UserEvent.USER_JOINED, onParticipantsUpdated);
                 userController.on(UserEvent.USER_LEFT, onParticipantsUpdated);
                 userController.on(UserEvent.USER_UPDATED, onParticipantsUpdated);
+                userController.on(UserEvent.ACTIVE_SPEAKER_USER_CHANGED, onActiveSpeakerChanged);
                 const streamManager = newMeetingController.getStreamManager();
                 const onVideoTrackAdded = stream => {
                     setVideoTrackMap({
@@ -172,6 +177,8 @@ function App({
                             participants={participants}
                             videoTrackMap={videoTrackMap}
                             audioTrackMap={audioTrackMap}
+                            activeSpeakerId={activeSpeakerId}
+                            localParticipant={localParticipant}
                         />
                     }
                 </div>}

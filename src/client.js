@@ -22,31 +22,39 @@ function checkIn() {
 }
 
 function startHuddle({ meetingId, hostname }) {
-    socket.emit('action', {
-        type: 'startHuddle',
-        data: {
-            meetingId,
-            hostname
-        }
-    });
+    if (socket) {
+        socket.emit('action', {
+            type: 'startHuddle',
+            data: {
+                meetingId,
+                hostname
+            }
+        });
+    }
 }
 
 function joinHuddle() {
-    socket.emit('action', {
-        type: 'joinHuddle'
-    })
+    if (socket) {
+        socket.emit('action', {
+            type: 'joinHuddle'
+        })
+    }
 }
 
 function getHuddle() {
-    socket.emit('action', {
-        type: 'getHuddle'
-    });
+    if (socket) {
+        socket.emit('action', {
+            type: 'getHuddle'
+        });
+    }
 }
 
 function leftHuddle() {
-    socket.emit('action', {
-        type: 'leftHuddle'
-    })
+    if (socket) {
+        socket.emit('action', {
+            type: 'leftHuddle'
+        })
+    }
 }
 
 function registerWebSocket({ jwt }) {
@@ -66,7 +74,7 @@ function registerWebSocket({ jwt }) {
     });
 
     socket.on('connect_error', (e) => {
-        console.log('connect error', e && e.message);
+        console.log('connect error', e.message);
     });
 
     socket.on('disconnect', () => {

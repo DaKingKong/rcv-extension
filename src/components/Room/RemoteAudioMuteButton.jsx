@@ -15,12 +15,12 @@ export function RemoteAudioMuteButton({
             symbol={participant && participant.isAudioMuted ? MicOff : Mic}
             onClick={async () => {
                 const audioController = meetingController.getAudioController();
-                if (participant && participant.isAudioMuted) {
-                    await audioController.unmuteRemoteAudioStream(participant.uid);
-                }
-                else {
-                    await audioController.muteRemoteAudioStream(participant.uid);
-                }
+                // if (participant && participant.isAudioMuted) {
+                //     await audioController.unmuteRemoteAudioStream(participant.uid);
+                // }
+                // else {
+                await audioController.muteRemoteAudioStream(participant.uid);
+                // }
             }}
             style={buttonStyle}
         />
