@@ -5,7 +5,7 @@ const { sequelize } = require('./sequelize');
 exports.UserModel = sequelize.define('users', {
   // rc extension id
   id: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.BIGINT,
     primaryKey: true,
   },
   accountId: {
