@@ -11,7 +11,6 @@ export function Room({
     meetingController,
     participants,
     videoTrackMap,
-    audioTrackMap,
     activeSpeakerId,
     localParticipant
 }) {
@@ -21,7 +20,6 @@ export function Room({
                 meetingController={meetingController}
                 participants={participants}
                 videoTrackMap={videoTrackMap}
-                audioTrackMap={audioTrackMap}
                 activeSpeakerId={activeSpeakerId}
                 localParticipant={localParticipant}
             />

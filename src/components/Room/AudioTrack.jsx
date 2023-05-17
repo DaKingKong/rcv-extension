@@ -17,5 +17,5 @@ export function AudioTrack({ track }) {
       el.srcObject = null;
   }, [track]);
 
-  return <div ref={ref} />;;
+  return <audio ref={ref} />;;
 }

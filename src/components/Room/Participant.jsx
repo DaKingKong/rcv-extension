@@ -11,7 +11,6 @@ import Crown from '../../images/crown.png';
 export function Participant({
   participant,
   videoTrack,
-  audioTrack,
   meetingController,
   index,
   isActiveSpeaker
@@ -162,9 +161,6 @@ export function Participant({
                 }
               </div>
             </div>)
-        }
-        {
-          audioTrack && (<AudioTrack track={audioTrack.stream} />)
         }
         <div style={menuContainerStyle}>
           {!participant.isMe && isHostOrModerator() && !participant.isAudioMuted &&

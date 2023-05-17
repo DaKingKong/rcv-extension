@@ -6,7 +6,6 @@ export function ParticipantList({
   meetingController,
   participants,
   videoTrackMap,
-  audioTrackMap,
   activeSpeakerId,
   localParticipant
 }) {
@@ -17,7 +16,6 @@ export function ParticipantList({
           key={participant.uid}
           participant={participant}
           videoTrack={videoTrackMap[participant.uid]}
-          audioTrack={audioTrackMap[participant.uid]}
           meetingController={meetingController}
           index={i}
           isActiveSpeaker={

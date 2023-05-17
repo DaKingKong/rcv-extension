@@ -11,6 +11,7 @@ import { login } from './client';
 
 import { Room } from './components/Room';
 import { Menu } from './components/Menu';
+import { AudioTrack } from './components/Room/AudioTrack';
 import { joinHuddle, leftHuddle } from './client';
 
 function App({
@@ -25,8 +26,8 @@ function App({
     const [localParticipant, setLocalParticipant] = useState(null);
     const [videoTrackMap, setVideoTrackMap] = useState({});
     const videoTrackMapRef = useRef(videoTrackMap);
-    const [audioTrackMap, setAudioTrackMap] = useState({});
-    const audioTrackMapRef = useRef(audioTrackMap);
+    const [localAudioTrack, setLocalAudioTrack] = useState(null);
+    const [remoteAudioTrack, setRemoteAudioTrack] = useState(null);
 
     function refreshParticipants() {
         const newMeetingController = rcvEngine.getMeetingController();
@@ -54,8 +55,7 @@ function App({
 
     useEffect(() => {
         videoTrackMapRef.current = videoTrackMap;
-        audioTrackMapRef.current = audioTrackMap;
-    }, [videoTrackMap, audioTrackMap]);
+    }, [videoTrackMap]);
 
     useEffect(() => {
         const onParticipantsUpdated = () => {
@@ -91,28 +91,30 @@ function App({
                     delete newVideoTrackMap[stream.participantId];
                     setVideoTrackMap(newVideoTrackMap)
                 };
-                const onAudioTrackAdded = stream => {
-                    const newAudioTrackMap = {
-                        ...audioTrackMapRef.current,
-                        [stream.participantId]: stream,
-                    };
-                    setAudioTrackMap(newAudioTrackMap)
+                const onLocalAudioTrackAdded = stream => {
+                    console.log('add local: ', stream);
+                    setLocalAudioTrack(stream);
                 };
-                const onAudioTrackRemoved = stream => {
-                    const newAudioTrackMap = {
-                        ...audioTrackMapRef.current,
-                    };
-                    delete newAudioTrackMap[stream.participantId];
-                    setAudioTrackMap(newAudioTrackMap)
+                const onLocalAudioTrackRemoved = stream => {
+                    console.log('remove local: ', stream);
+                    setLocalAudioTrack(null);
+                };
+                const onRemoteAudioTrackAdded = stream => {
+                    console.log('add remote: ', stream);
+                    setRemoteAudioTrack(stream);
+                };
+                const onRemoteAudioTrackRemoved = stream => {
+                    console.log('remove remote: ', stream);
+                    setRemoteAudioTrack(null);
                 };
                 streamManager.on(StreamEvent.LOCAL_VIDEO_TRACK_ADDED, onVideoTrackAdded);
                 streamManager.on(StreamEvent.LOCAL_VIDEO_TRACK_REMOVED, onVideoTrackRemoved);
                 streamManager.on(StreamEvent.REMOTE_VIDEO_TRACK_ADDED, onVideoTrackAdded);
                 streamManager.on(StreamEvent.REMOTE_VIDEO_TRACK_REMOVED, onVideoTrackRemoved);
-                streamManager.on(StreamEvent.LOCAL_AUDIO_TRACK_ADDED, onAudioTrackAdded);
-                streamManager.on(StreamEvent.LOCAL_AUDIO_TRACK_REMOVED, onAudioTrackRemoved);
-                streamManager.on(StreamEvent.REMOTE_AUDIO_TRACK_ADDED, onAudioTrackAdded);
-                streamManager.on(StreamEvent.REMOTE_AUDIO_TRACK_REMOVED, onAudioTrackRemoved);
+                streamManager.on(StreamEvent.LOCAL_AUDIO_TRACK_ADDED, onLocalAudioTrackAdded);
+                streamManager.on(StreamEvent.LOCAL_AUDIO_TRACK_REMOVED, onLocalAudioTrackRemoved);
+                streamManager.on(StreamEvent.REMOTE_AUDIO_TRACK_ADDED, onRemoteAudioTrackAdded);
+                streamManager.on(StreamEvent.REMOTE_AUDIO_TRACK_REMOVED, onRemoteAudioTrackRemoved);
 
                 const audioController = newMeetingController.getAudioController();
                 const videoController = newMeetingController.getVideoController();
@@ -177,11 +179,12 @@ function App({
                             meetingController={meetingController}
                             participants={participants}
                             videoTrackMap={videoTrackMap}
-                            audioTrackMap={audioTrackMap}
                             activeSpeakerId={activeSpeakerId}
                             localParticipant={localParticipant}
                         />
                     }
+                    {/* {localAudioTrack && <AudioTrack track={localAudioTrack.stream} />} */}
+                    {remoteAudioTrack && <AudioTrack track={remoteAudioTrack.stream} />}
                 </div>}
         </div>
     );
