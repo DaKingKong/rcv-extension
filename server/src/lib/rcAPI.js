@@ -27,7 +27,6 @@ async function getGlipProfileImage({ accessToken }) {
             }
         });
         if (extensionProfileImageResp.status === 200) {
-            console.log(extensionProfileImageResp)
             return extensionProfileImageResp.data.avatar;
         }
         else {
