@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { RcIconButton } from '@ringcentral/juno';
-import { Login, Logout } from '@ringcentral/juno-icon';
+import { RcButton } from '@ringcentral/juno';
 
 export function LogInButton({
     rcSDK
@@ -11,9 +10,9 @@ export function LogInButton({
             const loginOptions = rcSDK.parseLoginRedirect(event.data.callbackUri);
             loginOptions['code_verifier'] = rcSDK.platform()._codeVerifier;
 
-            chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-                chrome.tabs.sendMessage(tabs[0].id, { loginOptions });
-            });
+            const { fromTabId } = await chrome.storage.local.get('fromTabId');
+            chrome.tabs.sendMessage(fromTabId, { loginOptions });
+            window.close();
         }
     }, false);
 
@@ -21,21 +20,18 @@ export function LogInButton({
         <div>
             {
                 loggedIn ? (
-                    <RcIconButton
-                        size='xsmall'
-                        stretchIcon
+                    <RcButton
                         color="danger.b04"
                         onClick={
                             async () => {
                                 await rcSDK.platform().logout();
                                 setLoggedIn(false);
                             }}
-                        symbol={Logout}
-                    />
+                    >
+                        Logout
+                    </RcButton>
                 ) : (
-                    <RcIconButton
-                        size='xsmall'
-                        stretchIcon
+                    <RcButton
                         color="action.primary"
                         onClick=
                         {async () => {
@@ -47,8 +43,9 @@ export function LogInButton({
                                 console.error(e);
                             }
                         }}
-                        symbol={Login}
-                    />
+                    >
+                        Login
+                    </RcButton>
                 )}
         </div>
     )
