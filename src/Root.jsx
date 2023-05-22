@@ -5,17 +5,16 @@ import {
     UserEvent,
     StreamEvent,
     AudioEvent,
-    VideoEvent
+    VideoEvent,
 } from '@ringcentral/video-sdk';
 import { login } from './client';
 
 import { Room } from './components/Room';
 import { Menu } from './components/Menu';
 import { AudioTrack } from './components/Room/AudioTrack';
-import { joinHuddle, leftHuddle } from './client';
+import { joinHuddle, leaveHuddle } from './client';
 
 function App({
-    rcvEngine,
     rcSDK
 }) {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -142,9 +141,9 @@ function App({
                 videoController.on(VideoEvent.REMOTE_VIDEO_MUTE_CHANGED, (uid, muted) => {
                     refreshParticipants();
                 });
+
                 await audioController.enableAudio(true);
                 console.log(meetingInfo);
-                console.log(meetingInfo.meetingId);
                 if (!userController.getMyself().isHost) {
                     joinHuddle();
                 }
@@ -155,7 +154,7 @@ function App({
             setRoom(null);
             setMeetingController(null);
             setParticipants([]);
-            leftHuddle();
+            leaveHuddle();
         };
         rcvEngine.on(EngineEvent.MEETING_JOINED, onMeetingJoined);
         rcvEngine.on(EngineEvent.MEETING_LEFT, onMeetingLeft);

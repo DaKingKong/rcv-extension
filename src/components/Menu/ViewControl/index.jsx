@@ -73,7 +73,7 @@ export function ViewControl({
                                     {pageViewParticipants.length}
                                 </div>
                             }
-                            <img src={MenuLogo} />
+                            <img style={{ height: '48px', width: '48px' }} src={MenuLogo} />
                         </RcButton>
                 )}
             <div style={{ cursor: 'grab', display: 'inherit' }}>

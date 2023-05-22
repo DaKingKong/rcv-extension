@@ -40,7 +40,7 @@ export function JoinButton({
                     setButtonLoading(false);
                 }}
                 loading={buttonLoading}
-                style={{ backgroundColor: '#3C9949' }}
+                style={{ backgroundColor: '#3C9949', fontFamily: 'Lato, Helvetica, Arial, sans-serif' }}
             >
                 Join Huddle
             </RcButton>

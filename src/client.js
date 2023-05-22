@@ -49,7 +49,7 @@ function getHuddle() {
     }
 }
 
-function leftHuddle() {
+function leaveHuddle() {
     if (socket) {
         socket.emit('action', {
             type: 'leftHuddle'
@@ -134,4 +134,4 @@ exports.checkIn = checkIn;
 exports.startHuddle = startHuddle;
 exports.joinHuddle = joinHuddle;
 exports.getHuddle = getHuddle;
-exports.leftHuddle = leftHuddle;
+exports.leaveHuddle = leaveHuddle;

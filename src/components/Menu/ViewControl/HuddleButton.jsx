@@ -47,7 +47,7 @@ export function HuddleButton({
                                 setButtonLoading(false);
                             }}
                             loading={buttonLoading}
-                            style={{ backgroundColor: '#ffffff5c' }}
+                            style={{ backgroundColor: '#ffffff5c', fontFamily: 'Lato, Helvetica, Arial, sans-serif' }}
                         >
                             Start Huddle
                         </RcButton>
@@ -69,6 +69,7 @@ export function HuddleButton({
                             setButtonLoading(false);
                         }}
                         loading={buttonLoading}
+                        style={{ fontFamily: 'Lato, Helvetica, Arial, sans-serif' }}
                     >
                         Start Huddle
                     </RcButton>

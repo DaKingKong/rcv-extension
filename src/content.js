@@ -32,7 +32,7 @@ const root = ReactDOM.createRoot(rootElement);
 function Root() {
   return (
     <RcThemeProvider>
-      <App rcvEngine={rcvEngine} rcSDK={rcSDK} />
+      <App rcSDK={rcSDK} />
     </RcThemeProvider>
   );
 }

@@ -13,7 +13,8 @@ const itemStyle = {
 
 const itemTextStyle = {
     color: 'white',
-    fontSize: 'small'
+    fontSize: '11px',
+    fontFamily: 'Lato, Helvetica, Arial, sans-serif'
 }
 
 const containerStyle = {
