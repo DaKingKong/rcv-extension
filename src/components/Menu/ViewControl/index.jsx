@@ -4,6 +4,7 @@ import DragImage from '../../../images/dragImage_blue.png';
 import MenuLogo from '../../../images/menuLogo.png';
 import { HuddleButton } from './HuddleButton';
 import { JoinButton } from './JoinButton';
+import { LoginButton } from './LoginButton';
 
 const containerStyle = {
     display: 'flex',
@@ -27,9 +28,11 @@ export function ViewControl({
     meetingId,
     setMeetingId,
     hostname,
-    setHostname
+    setHostname,
+    loggedIn
 }) {
-    const [showHuddle, setShowHuddle] = useState(false);
+    // show states: 1. none, 2. login, 3. huddle, 4. join
+    const [showState, setShowState] = useState('none');
     const [pageViewParticipants, setPageViewParticipants] = useState([]);
 
     useEffect(() => {
@@ -46,36 +49,50 @@ export function ViewControl({
         })
     }, []);
 
+    useEffect(() => {
+        if (meetingId !== '' && loggedIn) {
+            setShowState('join');
+        }
+    }, [meetingId]);
+
     return (
         <div style={containerStyle}>
-            {meetingId !== '' ?
+            {showState === 'none' &&
+                <RcButton
+                    variant="plain"
+                    size='large'
+                    style={{ padding: '0px' }}
+                    onPointerEnter={() => {
+                        loggedIn ? setShowState('huddle') : setShowState('login')
+                    }}
+                >
+                    {
+                        pageViewParticipants.length > 1 &&
+                        <div style={pageViewParticipantCountBadgeStyle}>
+                            {pageViewParticipants.length}
+                        </div>
+                    }
+                    <img style={{ height: '48px', width: '48px' }} src={MenuLogo} />
+                </RcButton>
+            }
+            {showState === 'login' &&
+                <LoginButton
+                    setShowState={setShowState}
+                />
+            }
+            {showState === 'huddle' &&
+                <HuddleButton
+                    setShowState={setShowState}
+                    pageViewParticipants={pageViewParticipants}
+                />
+            }
+            {showState === 'join' &&
                 <JoinButton
                     hostname={hostname}
                     meetingId={meetingId}
                     pageViewParticipants={pageViewParticipants}
-                /> :
-                (
-                    showHuddle ?
-                        <HuddleButton
-                            setShowHuddle={setShowHuddle}
-                            pageViewParticipants={pageViewParticipants}
-                        />
-                        :
-                        <RcButton
-                            variant="plain"
-                            size='large'
-                            style={{ padding: '0px' }}
-                            onPointerEnter={() => { setShowHuddle(true) }}
-                        >
-                            {
-                                pageViewParticipants.length > 1 &&
-                                <div style={pageViewParticipantCountBadgeStyle}>
-                                    {pageViewParticipants.length}
-                                </div>
-                            }
-                            <img style={{ height: '48px', width: '48px' }} src={MenuLogo} />
-                        </RcButton>
-                )}
+                />
+            }
             <div style={{ cursor: 'grab', display: 'inherit' }}>
                 <RcButton
                     className="rc-huddle-menu-handle"

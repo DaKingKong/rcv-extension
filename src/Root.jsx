@@ -41,13 +41,23 @@ function App({
         }
         checkUserLogin();
 
-        chrome.runtime.onMessage.addListener(async (message) => {
-            if (message.loginOptions) {
-                const rcLoginResponse = await rcSDK.login(message.loginOptions);
-                const rcLoginResponseJson = await rcLoginResponse.json();
-                setLoggedIn(true);
-                await login({ rcAccessToken: rcLoginResponseJson.access_token })
-            }
+        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+            (async function () {
+                try {
+                    if (request.loginOptions) {
+                        const rcLoginResponse = await rcSDK.login(request.loginOptions);
+                        const rcLoginResponseJson = await rcLoginResponse.json();
+                        setLoggedIn(true);
+                        await login({ rcAccessToken: rcLoginResponseJson.access_token })
+                        sendResponse({ isSuccessful: true });
+                    }
+                }
+                catch (e) {
+                    console.log(e);
+                    sendResponse({ isSuccessful: false });
+                }
+            })();
+            return true;
         });
 
     }, []);
@@ -166,25 +176,25 @@ function App({
 
     return (
         <div >
-            {loggedIn &&
-                <div>
-                    <Menu
-                        room={room}
-                        localParticipant={localParticipant}
+            <div>
+                <Menu
+                    room={room}
+                    localParticipant={localParticipant}
+                    meetingController={meetingController}
+                    loggedIn={loggedIn}
+                />
+                {!!room &&
+                    <Room
                         meetingController={meetingController}
+                        participants={participants}
+                        videoTrackMap={videoTrackMap}
+                        activeSpeakerId={activeSpeakerId}
+                        localParticipant={localParticipant}
                     />
-                    {!!room &&
-                        <Room
-                            meetingController={meetingController}
-                            participants={participants}
-                            videoTrackMap={videoTrackMap}
-                            activeSpeakerId={activeSpeakerId}
-                            localParticipant={localParticipant}
-                        />
-                    }
-                    {/* {localAudioTrack && <AudioTrack track={localAudioTrack.stream} />} */}
-                    {remoteAudioTrack && <AudioTrack track={remoteAudioTrack.stream} />}
-                </div>}
+                }
+                {/* {localAudioTrack && <AudioTrack track={localAudioTrack.stream} />} */}
+                {remoteAudioTrack && <AudioTrack track={remoteAudioTrack.stream} />}
+            </div>
         </div>
     );
 }

@@ -12,8 +12,9 @@ async function openPopupWindow({ fromTab }) {
     const popup = await chrome.windows.create({
         url: 'popup.html',
         type: 'popup',
-        width: 200,
+        width: 240,
         height: 300,
+        focused: true
     });
     await chrome.storage.local.set({
         popupWindowId: popup.id,
@@ -23,6 +24,8 @@ async function openPopupWindow({ fromTab }) {
     });
 }
 
-chrome.action.onClicked.addListener(async function (tab) {
-    openPopupWindow({ fromTab: tab });
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+    if (request.action === 'openAuthPopup') {
+        openPopupWindow({ fromTab: sender.tab });
+    }
 });

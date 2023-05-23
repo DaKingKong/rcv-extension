@@ -16,6 +16,7 @@ export function Menu({
     room,
     localParticipant,
     meetingController,
+    loggedIn
 }) {
     const [loading, setLoading] = useState(false);
     const [meetingId, setMeetingId] = useState('');
@@ -39,6 +40,7 @@ export function Menu({
                             setMeetingId={setMeetingId}
                             hostname={hostname}
                             setHostname={setHostname}
+                            loggedIn={loggedIn}
                         />
                     }
                 </RcLoading>

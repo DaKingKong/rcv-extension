@@ -15,14 +15,14 @@ const containerStyle = {
 }
 
 export function HuddleButton({
-    setShowHuddle,
+    setShowState,
     pageViewParticipants,
 }) {
     const [buttonLoading, setButtonLoading] = useState(false);
     return (
         <div
             onPointerLeave={() => {
-                if (!buttonLoading) { setShowHuddle(false) }
+                if (!buttonLoading) { setShowState('none') }
             }}
         >
             {
