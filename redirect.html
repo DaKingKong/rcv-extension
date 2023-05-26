@@ -14,7 +14,7 @@
   <body>
     <p>Loading</p>
     <script>
-      window.opener.postMessage({
+      window.postMessage({
         callbackUri: window.location.search
       }, "chrome-extension://bhadkbdlejofngkoldjfhkjpodjifcbf/popup.html");
       window.close();
