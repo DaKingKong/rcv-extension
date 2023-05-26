@@ -1,24 +1,25 @@
 <head>
-  <meta http-equiv="cache-control" content="max-age=0" />
-  <meta http-equiv="cache-control" content="no-cache" />
-  <meta http-equiv="expires" content="0" />
-  <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
-  <meta http-equiv="pragma" content="no-cache" />
-  <!-- Force Edge to stop detecting phone numbers -->
-  <meta name="format-detection" content="telephone=no">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta charset="UTF-8">
-  <title>Demo</title>
-</head>
-
-<body>
-  <p>Loading</p>
-  <script>
-    chrome.runtime.sendMessage({
-      action: 'onCallbackUri',
-      callbackUri: window.location.search
-    });
-  </script>
-</body>
-
-</html>
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <!-- Force Edge to stop detecting phone numbers -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Demo</title>
+  </head>
+  
+  <body>
+    <p>Loading</p>
+    <script>
+      window.opener.postMessage({
+        action: 'onCallbackUri',
+        callbackUri: window.location.search
+      }, "chrome-extension://bhadkbdlejofngkoldjfhkjpodjifcbf/popup.html");
+      window.close();
+    </script>
+  </body>
+  
+  </html>
