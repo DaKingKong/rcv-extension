@@ -27,6 +27,7 @@ function App({
     const videoTrackMapRef = useRef(videoTrackMap);
     const [localAudioTrack, setLocalAudioTrack] = useState(null);
     const [remoteAudioTrack, setRemoteAudioTrack] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     function refreshParticipants() {
         const newMeetingController = rcvEngine.getMeetingController();
@@ -34,6 +35,7 @@ function App({
         const newParticipants = userController.getMeetingUsers();
         setParticipants(Object.values(newParticipants).filter(p => !p.isDeleted));
     }
+
     useEffect(() => {
         const checkUserLogin = async () => {
             const isLoggedIn = await rcSDK.platform().loggedIn();
@@ -44,12 +46,16 @@ function App({
         chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             (async function () {
                 try {
-                    if (request.loginOptions) {
-                        const rcLoginResponse = await rcSDK.login(request.loginOptions);
+                    if (request.action === 'returnCallbackUri') {
+                        const trimmedUri = request.responseUrl.split('callback_uri')[1];
+                        const loginOptions = rcSDK.parseLoginRedirect(trimmedUri);
+                        loginOptions['code_verifier'] = rcSDK.platform()._codeVerifier;
+                        const rcLoginResponse = await rcSDK.login(loginOptions);
                         const rcLoginResponseJson = await rcLoginResponse.json();
                         setLoggedIn(true);
                         await login({ rcAccessToken: rcLoginResponseJson.access_token })
                         sendResponse({ isSuccessful: true });
+                        setLoading(false);
                     }
                 }
                 catch (e) {
@@ -182,6 +188,9 @@ function App({
                     localParticipant={localParticipant}
                     meetingController={meetingController}
                     loggedIn={loggedIn}
+                    rcSDK={rcSDK}
+                    loading={loading}
+                    setLoading={setLoading}
                 />
                 {!!room &&
                     <Room

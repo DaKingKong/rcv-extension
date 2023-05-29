@@ -12,7 +12,8 @@
     "permissions": [
         "scripting",
         "activeTab",
-        "storage"
+        "storage",
+        "identity"
     ],
     "action": {
         "default_icon": {
@@ -20,8 +21,7 @@
             "32": "/images/logo32.png",
             "48": "/images/logo48.png",
             "128": "/images/logo128.png"
-        },
-        "default_popup": "popup.html"
+        }
     },
     "host_permissions": [
         "https://www.figma.com/*"

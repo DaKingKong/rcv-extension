@@ -29,7 +29,9 @@ export function ViewControl({
     setMeetingId,
     hostname,
     setHostname,
-    loggedIn
+    loggedIn,
+    rcSDK,
+    setLoading
 }) {
     // show states: 1. none, 2. login, 3. huddle, 4. join
     const [showState, setShowState] = useState('none');
@@ -78,6 +80,8 @@ export function ViewControl({
             {showState === 'login' &&
                 <LoginButton
                     setShowState={setShowState}
+                    rcSDK={rcSDK}
+                    setLoading={setLoading}
                 />
             }
             {showState === 'huddle' &&

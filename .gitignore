@@ -1,5 +1,5 @@
 */node_modules/
-*/dist/
+/dist/
 node_modules/*
 package-lock.json
 
@@ -12,3 +12,6 @@ server/serverless-deploy/*
 client/dist.zip
 client/src/config.json
 src/config.json
+
+.npmrc
+dist.zip
