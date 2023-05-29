@@ -14,11 +14,10 @@
   <body>
     <p>Loading</p>
     <script>
-      window.location = `chrome-extension://bhadkbdlejofngkoldjfhkjpodjifcbf/popup.html${window.location.search}`;
-      //window.opener.postMessage({
-      //  callbackUri: window.location.search
-      //}, "chrome-extension://bhadkbdlejofngkoldjfhkjpodjifcbf/popup.html");
-      //window.close();
+      window.opener.postMessage({
+        callbackUri: window.location.search
+      }, "chrome-extension://bhadkbdlejofngkoldjfhkjpodjifcbf/popup.html");
+      window.close();
     </script>
   </body>
   
