@@ -5,7 +5,8 @@ import { Videocam } from '@ringcentral/juno-icon';
 const listItemContainerStyle = {
     display: 'flex',
     flexDirection: 'row',
-    margin: '5px'
+    margin: '5px',
+    whiteSpace: 'nowrap'
 }
 
 const textStyle = {

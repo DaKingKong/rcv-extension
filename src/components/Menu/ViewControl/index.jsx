@@ -52,8 +52,8 @@ export function ViewControl({
     }, []);
 
     useEffect(() => {
-        if (meetingId !== '' && loggedIn) {
-            setShowState('join');
+        if (loggedIn) {
+            meetingId === '' ? setShowState('huddle') : setShowState('join');
         }
     }, [meetingId]);
 
