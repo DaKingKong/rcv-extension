@@ -4,6 +4,25 @@ import { io } from 'socket.io-client';
 
 let socket = null;
 
+function getDocInfo() {
+    const url = window.location.href;
+    const googleRegex = new RegExp("https://docs.google.com/.+/d/(.+)/.+");
+    const figmaRegex = new RegExp("https://www.figma.com/file/(.+)/.+");
+    if (url.match(googleRegex)) {
+        return {
+            platform: 'Google',
+            docId: url.match(googleRegex)[1]
+        }
+    }
+    if (url.match(figmaRegex)) {
+        return {
+            platform: 'Figma',
+            docId: url.match(figmaRegex)[1]
+        }
+    }
+    return null;
+}
+
 async function login({ rcAccessToken, firebaseToken }) {
     const postBody = {
         rcAccessToken,
@@ -11,14 +30,21 @@ async function login({ rcAccessToken, firebaseToken }) {
     }
     const loginResponse = await axios.post(`${apiConfig.server}/login`, postBody);
     localStorage.setItem('rc-huddle-jwt', loginResponse.data);
-    registerWebSocket({ jwt: loginResponse.data });
+    const docInfo = getDocInfo();
+    registerWebSocket({ jwt: loginResponse.data, docInfo });
 }
 
 function checkIn() {
     const jwt = localStorage.getItem('rc-huddle-jwt');
     if (jwt) {
-        registerWebSocket({ jwt });
+        const docInfo = getDocInfo();
+        if (docInfo) {
+            registerWebSocket({ jwt, docInfo });
+            return true;
+        }
+        return false;
     }
+    return false;
 }
 
 function startHuddle({ meetingId, hostname }) {
@@ -57,13 +83,13 @@ function leaveHuddle() {
     }
 }
 
-function registerWebSocket({ jwt }) {
+function registerWebSocket({ jwt, docInfo }) {
     socket = io(`${apiConfig.server}`, {
         transports: ['websocket'],
         auth: {
             jwt,
-            platform: 'Figma',
-            docId: window.location.pathname.split('/file/')[1].split('/')[0]
+            platform: docInfo.platform,
+            docId: docInfo.docId
         },
     });
 
@@ -135,3 +161,4 @@ exports.startHuddle = startHuddle;
 exports.joinHuddle = joinHuddle;
 exports.getHuddle = getHuddle;
 exports.leaveHuddle = leaveHuddle;
+exports.getDocInfo = getDocInfo;

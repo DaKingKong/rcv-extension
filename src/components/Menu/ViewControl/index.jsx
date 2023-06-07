@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { RcButton } from '@ringcentral/juno';
+import { RcButton, RcIconButton } from '@ringcentral/juno';
 import DragImage from '../../../images/dragImage_blue.png';
 import MenuLogo from '../../../images/menuLogo.png';
 import { HuddleButton } from './HuddleButton';
 import { JoinButton } from './JoinButton';
-import { LoginButton } from './LoginButton';
+import { SettingsPanel } from './SettingsPanel';
+import { Settings, Close } from '@ringcentral/juno-icon';
 
 const containerStyle = {
     display: 'flex',
@@ -30,12 +31,14 @@ export function ViewControl({
     hostname,
     setHostname,
     loggedIn,
+    setLoggedIn,
     rcSDK,
     setLoading
 }) {
     // show states: 1. none, 2. login, 3. huddle, 4. join
     const [showState, setShowState] = useState('none');
     const [pageViewParticipants, setPageViewParticipants] = useState([]);
+    const [showSettings, setShowSettings] = useState(false);
 
     useEffect(() => {
         window.addEventListener('message', (event) => {
@@ -58,7 +61,14 @@ export function ViewControl({
     }, [meetingId]);
 
     return (
-        <div style={containerStyle}>
+        <div
+            style={containerStyle}
+            onPointerLeave={() => {
+                if (!showSettings && showState !== 'join') {
+                    setShowState('none');
+                }
+            }}
+        >
             {showState === 'none' &&
                 <RcButton
                     variant="plain"
@@ -77,18 +87,38 @@ export function ViewControl({
                     <img style={{ height: '48px', width: '48px' }} src={MenuLogo} />
                 </RcButton>
             }
-            {showState === 'login' &&
-                <LoginButton
-                    setShowState={setShowState}
+            {(showState === 'huddle' || showState === 'login') &&
+                <HuddleButton
+                    showState={showState}
                     rcSDK={rcSDK}
+                    pageViewParticipants={pageViewParticipants}
                     setLoading={setLoading}
                 />
             }
             {showState === 'huddle' &&
-                <HuddleButton
-                    setShowState={setShowState}
-                    pageViewParticipants={pageViewParticipants}
-                />
+                <div>
+                    <RcIconButton
+                        size='medium'
+                        color="neutral.f01"
+                        symbol={showSettings ? Close : Settings}
+                        onClick={() => {
+                            setShowSettings(!showSettings);
+                        }}
+                        style={{
+                            backgroundColor: 'rgb(6, 111, 172)',
+                            height: '48px',
+                            width: '48px',
+                            marginLeft: '2px'
+                        }}
+                    >
+                    </RcIconButton>
+                    {showSettings &&
+                        <SettingsPanel
+                            setShowState={setShowState}
+                            setShowSettings={setShowSettings}
+                            setLoggedIn={setLoggedIn}
+                        />}
+                </div>
             }
             {showState === 'join' &&
                 <JoinButton

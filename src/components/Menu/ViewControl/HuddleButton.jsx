@@ -15,16 +15,13 @@ const containerStyle = {
 }
 
 export function HuddleButton({
-    setShowState,
+    showState,
+    rcSDK,
     pageViewParticipants,
+    setLoading
 }) {
-    const [buttonLoading, setButtonLoading] = useState(false);
     return (
-        <div
-            onPointerLeave={() => {
-                if (!buttonLoading) { setShowState('none') }
-            }}
-        >
+        <div>
             {
                 pageViewParticipants.length > 1 ?
                     <div style={containerStyle}>
@@ -36,17 +33,17 @@ export function HuddleButton({
                             radius="round"
                             size='large'
                             onClick={async () => {
-                                setButtonLoading(true);
+                                setLoading(true);
                                 try {
                                     const meetingController = await rcvEngine.startInstantMeeting();
                                     const meetingInfo = await meetingController.getMeetingInfo();
                                     startHuddle({ meetingId: meetingInfo.meetingId, hostname: meetingInfo.hostName });
+                                    setLoading(false);
                                 } catch (e) {
+                                    setLoading(false);
                                     console.error(e);
                                 }
-                                setButtonLoading(false);
                             }}
-                            loading={buttonLoading}
                             style={{ backgroundColor: '#ffffff5c', fontFamily: 'Lato, Helvetica, Arial, sans-serif' }}
                         >
                             Start Huddle
@@ -58,22 +55,32 @@ export function HuddleButton({
                         radius="round"
                         size='xlarge'
                         onClick={async () => {
-                            setButtonLoading(true);
-                            try {
-                                const meetingController = await rcvEngine.startInstantMeeting();
-                                const meetingInfo = await meetingController.getMeetingInfo();
-                                startHuddle({ meetingId: meetingInfo.meetingId, hostname: meetingInfo.hostName });
-                            } catch (e) {
-                                console.error(e);
+                            if (showState === 'login') {
+                                setLoading(true);
+                                const oauthUrl = rcSDK.loginUrl({ usePKCE: true });
+                                chrome.runtime.sendMessage({
+                                    action: 'openOauth',
+                                    url: oauthUrl
+                                });
                             }
-                            setButtonLoading(false);
+                            if (showState === 'huddle') {
+                                setLoading(true);
+                                try {
+                                    const meetingController = await rcvEngine.startInstantMeeting();
+                                    const meetingInfo = await meetingController.getMeetingInfo();
+                                    startHuddle({ meetingId: meetingInfo.meetingId, hostname: meetingInfo.hostName });
+                                    setLoading(false);
+                                } catch (e) {
+                                    setLoading(false);
+                                    console.error(e);
+                                }
+                            }
                         }}
-                        loading={buttonLoading}
                         style={{ fontFamily: 'Lato, Helvetica, Arial, sans-serif' }}
                     >
                         Start Huddle
                     </RcButton>
             }
-        </div>
+        </div >
     )
 }

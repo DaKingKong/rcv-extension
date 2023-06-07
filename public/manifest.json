@@ -24,7 +24,8 @@
         }
     },
     "host_permissions": [
-        "https://www.figma.com/*"
+        "https://www.figma.com/*",
+        "https://docs.google.com/*"
     ],
     "background": {
         "service_worker": "sw.js"
@@ -36,7 +37,8 @@
                 "ringcentral.js"
             ],
             "matches": [
-                "https://www.figma.com/*"
+                "https://www.figma.com/*",
+                "https://docs.google.com/*"
             ],
             "all_frames": false
         }

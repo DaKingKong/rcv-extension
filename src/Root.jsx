@@ -38,7 +38,9 @@ function App({
 
     useEffect(() => {
         const checkUserLogin = async () => {
-            const isLoggedIn = await rcSDK.platform().loggedIn();
+            const isRCLoggedIn = await rcSDK.platform().loggedIn();
+            const jwt = localStorage.getItem('rc-huddle-jwt');
+            const isLoggedIn = isRCLoggedIn && jwt;
             setLoggedIn(isLoggedIn);
         }
         checkUserLogin();
@@ -60,6 +62,7 @@ function App({
                 }
                 catch (e) {
                     console.log(e);
+                    setLoading(false);
                     sendResponse({ isSuccessful: false });
                 }
             })();
@@ -188,6 +191,7 @@ function App({
                     localParticipant={localParticipant}
                     meetingController={meetingController}
                     loggedIn={loggedIn}
+                    setLoggedIn={setLoggedIn}
                     rcSDK={rcSDK}
                     loading={loading}
                     setLoading={setLoading}

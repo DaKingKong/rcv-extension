@@ -24,7 +24,7 @@ export function CollapseButton({
                 stretchIcon
                 color="neutral.f01"
                 symbol={ArrowRight1}
-                onClick={async () => {
+                onClick={() => {
                     setCollapse(true)
                 }}
             />

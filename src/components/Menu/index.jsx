@@ -17,6 +17,7 @@ export function Menu({
     localParticipant,
     meetingController,
     loggedIn,
+    setLoggedIn,
     rcSDK,
     loading,
     setLoading
@@ -43,6 +44,7 @@ export function Menu({
                             hostname={hostname}
                             setHostname={setHostname}
                             loggedIn={loggedIn}
+                            setLoggedIn={setLoggedIn}
                             rcSDK={rcSDK}
                             setLoading={setLoading}
                         />

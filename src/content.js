@@ -37,10 +37,12 @@ function Root() {
   );
 }
 
-root.render(
-  <Root />
-);
+const showUI = client.getDocInfo();
+if (showUI) {
+  root.render(
+    <Root />
+  );
+  client.checkIn()
+}
 
 console.log('content script loaded.');
-
-client.checkIn();
