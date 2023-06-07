@@ -18,7 +18,8 @@ export function HuddleButton({
     showState,
     rcSDK,
     pageViewParticipants,
-    setLoading
+    setLoading,
+    setShowSettings
 }) {
     return (
         <div>
@@ -34,6 +35,7 @@ export function HuddleButton({
                             size='large'
                             onClick={async () => {
                                 setLoading(true);
+                                setShowSettings(false);
                                 try {
                                     const meetingController = await rcvEngine.startInstantMeeting();
                                     const meetingInfo = await meetingController.getMeetingInfo();
@@ -65,6 +67,7 @@ export function HuddleButton({
                             }
                             if (showState === 'huddle') {
                                 setLoading(true);
+                                setShowSettings(false);
                                 try {
                                     const meetingController = await rcvEngine.startInstantMeeting();
                                     const meetingInfo = await meetingController.getMeetingInfo();

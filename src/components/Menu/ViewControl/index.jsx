@@ -93,6 +93,7 @@ export function ViewControl({
                     rcSDK={rcSDK}
                     pageViewParticipants={pageViewParticipants}
                     setLoading={setLoading}
+                    setShowSettings={setShowSettings}
                 />
             }
             {showState === 'huddle' &&
