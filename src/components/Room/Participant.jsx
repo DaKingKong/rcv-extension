@@ -12,7 +12,6 @@ export function Participant({
   participant,
   videoTrack,
   meetingController,
-  index,
   isActiveSpeaker
 }) {
   const itemStyle = {
@@ -40,8 +39,7 @@ export function Participant({
     alignItems: 'center',
     flexDirection: 'column',
     position: 'absolute',
-    top: '0',
-    left: `${230 * index}px`
+    top: '0'
   }
 
   const [size, setSize] = useState(200);

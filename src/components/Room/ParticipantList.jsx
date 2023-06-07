@@ -10,14 +10,13 @@ export function ParticipantList({
   localParticipant
 }) {
   return (
-    <div>
+    <div style={{ position: 'absolute' }}>
       {participants.map((participant, i) => (
         <Participant
           key={participant.uid}
           participant={participant}
           videoTrack={videoTrackMap[participant.uid]}
           meetingController={meetingController}
-          index={i}
           isActiveSpeaker={
             localParticipant.uid !== participant.uid && participant.uid === activeSpeakerId && !participant.isAudioMuted ||
             localParticipant.uid === participant.uid && !localParticipant.isAudioMuted
