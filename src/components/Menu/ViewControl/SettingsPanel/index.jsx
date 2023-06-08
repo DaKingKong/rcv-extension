@@ -1,5 +1,6 @@
-import React from 'react';
-import { RcButton } from '@ringcentral/juno';
+import React, { useState } from 'react';
+import { RcIconButton } from '@ringcentral/juno';
+import { Logout } from '@ringcentral/juno-icon';
 
 const containerStyle = {
     position: 'absolute',
@@ -7,7 +8,8 @@ const containerStyle = {
     flexDirection: 'column-reverse',
     flexWrap: 'nowrap',
     alignItems: 'center',
-    top: '-26px',
+    top: '-50px',
+    marginLeft: '2px'
 }
 
 export function SettingsPanel({
@@ -15,12 +17,13 @@ export function SettingsPanel({
     setShowSettings,
     setLoggedIn,
 }) {
+    const [showLogoutTooltip, setShowLogoutTooltip] = useState(false);
     return (
         <div style={containerStyle}>
-            <RcButton
-                size='xsmall'
-                color="#E6413C"
-                radius="round"
+            <RcIconButton
+                size='medium'
+                color="danger.b03"
+                symbol={Logout}
                 onClick={() => {
                     localStorage.removeItem('rc-huddle-jwt');
                     localStorage.removeItem('rc-platform');
@@ -28,9 +31,28 @@ export function SettingsPanel({
                     setShowState('none');
                     setLoggedIn(false)
                 }}
+                style={{
+                    backgroundColor: '#E6413C',
+                    height: '48px',
+                    width: '48px',
+                }}
+                variant='contained'
+                onPointerEnter={() => { setShowLogoutTooltip(true); }}
+                onPointerLeave={() => { setShowLogoutTooltip(false); }}
             >
-                Logout
-            </RcButton>
-        </div>
+                {showLogoutTooltip && <div
+                    style={{
+                        fontFamily: 'Lato, Helvetica, Arial, sans-serif',
+                        fontSize: '12px',
+                        backgroundColor: '#212121',
+                        position: 'absolute',
+                        borderRadius: '6px',
+                        right: '54px',
+                        width: '70px',
+                        padding: '4px'
+                    }}
+                >Logout</div>}
+            </RcIconButton >
+        </div >
     )
 }
