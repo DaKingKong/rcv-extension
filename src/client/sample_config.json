@@ -1,6 +1,6 @@
 {
   "clientId": "",
   "rcServer": "https://platform.devtest.ringcentral.com",
-  "redirectUri": "https://xxxxxxxxxxxxxx.chromiumapp.org/callback_uri",
+  "redirectUri": "https://{extensionId}.chromiumapp.org/callback_uri",
   "server": ""
 }
