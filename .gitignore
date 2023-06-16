@@ -3,15 +3,13 @@
 node_modules/*
 package-lock.json
 
-*.env
+.env
 *.sqlite
-env.yml
-serverless.yml
 
-server/serverless-deploy/*
 client/dist.zip
-client/src/config.json
-src/config.json
+src/client/config.json
 
 .npmrc
 dist.zip
+
+/public/manifest.json
