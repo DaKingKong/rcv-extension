@@ -13,3 +13,4 @@ src/client/config.json
 dist.zip
 
 /public/manifest.json
+/local/manifest.json

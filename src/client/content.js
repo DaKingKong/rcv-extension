@@ -9,13 +9,12 @@ import { RcThemeProvider } from '@ringcentral/juno';
 import { RcvEngine } from '@ringcentral/video-sdk';
 import SDK from './ringcentral';
 import App from './Root';
-import apiConfig from './config.json';
 import client from './client';
 
 const rcSDK = new SDK({
-  clientId: apiConfig.clientId,
-  server: apiConfig.rcServer,
-  redirectUri: apiConfig.redirectUri
+  clientId: process.env.CLIENT_ID,
+  server: process.env.RC_SERVER,
+  redirectUri: process.env.REDIRECT_URI
 });
 const rcvEngine = RcvEngine.create(
   {

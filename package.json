@@ -1,6 +1,6 @@
 {
   "name": "rc-video-demo",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "dependencies": {
     "@ringcentral/juno": "2.19.2",
     "@ringcentral/juno-icon": "^1.35.0",
@@ -9,6 +9,7 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
+    "esbuild-envfile-plugin": "^1.0.5",
     "express": "^4.18.2",
     "firebase": "^9.21.0",
     "firebase-admin": "^11.7.0",
@@ -28,11 +29,12 @@
   },
   "scripts": {
     "ngrok": "ngrok http 6066 ",
-    "localhost": "node ./server/src/localhost.js",
-    "server": "node ./server/src/server.js",
+    "localhost": "node ./src/server/localhost.js",
+    "server": "node ./src/server/server.js",
     "start": "npm run server",
     "dev": "npm run localhost",
-    "build-ext": "node ./build.js"
+    "build-ext": "node ./build.js",
+    "build-local-ext": "node ./buildLocal.js"
   },
   "devDependencies": {
     "esbuild": "^0.17.14",

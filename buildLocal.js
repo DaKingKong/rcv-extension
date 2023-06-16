@@ -24,7 +24,7 @@ async function runBuild() {
         define,
         plugins: [
             copyStaticFiles({
-                src: './public',
+                src: './local',
                 dest: './dist',
                 dereference: true,
                 recursive: true,

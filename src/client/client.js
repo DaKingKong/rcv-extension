@@ -1,5 +1,4 @@
 import axios from 'axios';
-import apiConfig from './config.json';
 import { io } from 'socket.io-client';
 
 let socket = null;
@@ -28,7 +27,7 @@ async function login({ rcAccessToken, firebaseToken }) {
         rcAccessToken,
         firebaseToken
     }
-    const loginResponse = await axios.post(`${apiConfig.server}/login`, postBody);
+    const loginResponse = await axios.post(`${process.env.APP_SERVER}/login`, postBody);
     localStorage.setItem('rc-huddle-jwt', loginResponse.data);
     const docInfo = getDocInfo();
     registerWebSocket({ jwt: loginResponse.data, docInfo });
@@ -84,7 +83,7 @@ function leaveHuddle() {
 }
 
 function registerWebSocket({ jwt, docInfo }) {
-    socket = io(`${apiConfig.server}`, {
+    socket = io(`${process.env.APP_SERVER}`, {
         transports: ['websocket'],
         auth: {
             jwt,
