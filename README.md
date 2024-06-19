@@ -1,3 +1,6 @@
+This repository serves as a demonstration of the [RingCentral Video Client SDK[(https://developers.ringcentral.com/guide/video/client-sdk). 
+You can access the Chrome extension for this demo in the [Google Chrome store](https://chromewebstore.google.com/detail/ringcentral-huddle/obmihhfcpgfjippkmkbkbaaoncohmddd).
+
 # Setup
 
 - `npm i` (if having dependency resolver issue, just go `npm i --force`)
