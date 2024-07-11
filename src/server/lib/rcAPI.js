@@ -35,7 +35,8 @@ async function getGlipProfileImage({ accessToken }) {
         }
     }
     catch (e) {
-        console.log(e);
+        console.log(e?.status);
+        console.log(e?.message);
         return null;
     }
 }

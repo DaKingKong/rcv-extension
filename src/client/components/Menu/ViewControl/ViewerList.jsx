@@ -73,7 +73,6 @@ export function ViewerList({
             }
         }
         else {
-            console.log(viewers)
             return viewers.map((v, i) => {
                 const style = v?.image ?
                     getProfileImageStyle({ index: i, count: viewers.length }) :

@@ -84,7 +84,8 @@ const initializeSocket = function ({ server }) {
             await onClientCheckIn({ platform, docId });
         }
         catch (e) {
-            console.log(e);
+            console.log(e?.status);
+            console.log(e?.message);
         }
     });
 
@@ -113,7 +114,6 @@ async function onClientCheckOut({ platform, docId }) {
 }
 
 async function syncSession({ session, platform, docId }) {
-    console.log(session);
     // get all in-session users
     const inSessionSockets = sockets.filter(s => s.platform === platform && s.docId === docId);
     const inSessionExtensionIds = inSessionSockets.map(s => { return s.extensionId; });
